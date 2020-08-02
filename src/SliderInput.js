@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+// Components
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
@@ -14,39 +15,44 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SliderInput() {
+export default function SliderInput({
+  name,
+  units,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+}) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(1.5);
-
-  const handleSliderChange = (event, newValue) => {
-    setValue(newValue);
+  const handleSliderChange = (_event, newValue) => {
+    onChange(newValue);
   };
-
   const handleInputChange = (event) => {
-    setValue(event.target.value === "" ? "" : Number(event.target.value));
+    onChange(event.target.value === "" ? "" : Number(event.target.value));
   };
 
   const handleBlur = () => {
-    if (value < 0) {
-      setValue(0);
-    } else if (value > 18) {
-      setValue(18);
+    if (value < min) {
+      onChange(min);
+    } else if (value > max) {
+      onChange(max);
     }
   };
 
   return (
     <div className={classes.root}>
       <Typography id="slider-input" gutterBottom>
-        Patient age
+        {name}
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs>
           <Slider
-            value={typeof value === "number" ? value : 0}
-            step={0.1}
+            value={typeof value === "number" ? value : min}
+            step={step}
             marks
-            min={0}
-            max={18}
+            min={min}
+            max={max}
             onChange={handleSliderChange}
             aria-labelledby="slider-input"
           />
@@ -59,16 +65,16 @@ export default function SliderInput() {
             onChange={handleInputChange}
             onBlur={handleBlur}
             inputProps={{
-              step: 0.1,
-              min: 0,
-              max: 18,
+              step,
+              min,
+              max,
               type: "number",
               "aria-labelledby": "slider-input",
             }}
           />
         </Grid>
         <Grid item>
-          <Typography>years old</Typography>
+          <Typography>{units}</Typography>
         </Grid>
       </Grid>
     </div>

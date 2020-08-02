@@ -1,4 +1,4 @@
-const DATA = [
+const CATEGORIES = [
   {
     cat: "Premedication",
     meds: [
@@ -57,4 +57,6 @@ const DATA = [
   },
 ];
 
-export default DATA;
+const id = (i, j) => i.toString() + "," + j.toString();
+
+export { CATEGORIES, id };
