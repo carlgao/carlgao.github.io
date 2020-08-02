@@ -1,6 +1,5 @@
 import React from "react";
 // Resources
-import logo from "./logo.svg";
 import "./App.css";
 import DATA from "./data.js";
 // Components
@@ -22,7 +21,6 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           Pediatric Anesthesiology Helper
-          <img src={logo} className="App-logo" alt="logo" />
           <SliderInput name="Age" onChange={handleAgeChange} />
           Show dosages for:
         </header>
