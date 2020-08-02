@@ -1,8 +1,10 @@
 import React from "react";
+// Resources
 import logo from "./logo.svg";
 import "./App.css";
-
 import DATA from "./data.js";
+// Components
+import SliderInput from "./SliderInput.js";
 
 class App extends React.Component {
   constructor(props) {
@@ -13,20 +15,16 @@ class App extends React.Component {
   }
 
   render() {
+    const handleAgeChange = (event, newValue) => {
+      console.log(event, newValue);
+    };
     return (
       <div className="App">
         <header className="App-header">
+          Pediatric Anesthesiology Helper
           <img src={logo} className="App-logo" alt="logo" />
-          <p>{this.state.age}</p>
-          <p>{this.state.weight}</p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <SliderInput name="Age" onChange={handleAgeChange} />
+          Show dosages for:
         </header>
       </div>
     );
