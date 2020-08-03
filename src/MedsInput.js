@@ -1,51 +1,40 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Checkbox from "@material-ui/core/Checkbox";
+import Container from "@material-ui/core/Container";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormLabel from "@material-ui/core/FormLabel";
+import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles({
-  root: {
-    width: 240,
-  },
-  input: {
-    width: 54,
-  },
-});
-
 export default function MedsInput({ categories, onChange }) {
-  const classes = useStyles();
-
-  const handleChange = (i, j, checked) => {
-    console.log(i, j, checked);
-    onChange(i, j, checked);
-  };
-
   return (
-    <div className={classes.root}>
-      <Typography gutterBottom>Show dosages for:</Typography>
+    <Grid container spacing={1} justify="center">
+      <Grid item xs={12}>
+        <Typography gutterBottom>Show dosages for:</Typography>
+      </Grid>
       {categories.map(({ cat, meds }, i) => (
-        <div key={i}>
+        <Grid item key={i}>
           <FormLabel>{cat}</FormLabel>
-          <FormGroup>
-            {meds.map(({ med }, j) => (
-              <FormControlLabel
-                key={j}
-                control={
-                  <Checkbox
-                    name={med}
-                    onChange={(_event, checked) => handleChange(i, j, checked)}
-                  />
-                }
-                label={med}
-              />
-            ))}
-          </FormGroup>
-        </div>
+          <Container align="left">
+            <FormGroup>
+              {meds.map(({ med }, j) => (
+                <FormControlLabel
+                  key={j}
+                  control={
+                    <Checkbox
+                      name={med}
+                      onChange={(_event, checked) => onChange(i, j, checked)}
+                    />
+                  }
+                  label={med}
+                />
+              ))}
+            </FormGroup>
+          </Container>
+        </Grid>
       ))}
-    </div>
+    </Grid>
   );
 }

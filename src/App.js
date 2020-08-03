@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 // Resources
-import "./App.css";
 import { CATEGORIES, id } from "./data.js";
 // Components
+import Container from "@material-ui/core/Container";
 import MedsInput from "./MedsInput.js";
 import MedsOutput from "./MedsOutput.js";
-import SliderInput from "./SliderInput.js";
+import PatientInput from "./PatientInput.js";
+import Typography from "@material-ui/core/Typography";
 
 export default function App() {
   const [age, setAge] = useState(1.5);
+  const [weight, setWeight] = useState(6.9);
   const [medIdSet, setMedIdSet] = useState(new Set());
   const [catCounts, setCatCounts] = useState({});
 
@@ -30,24 +32,21 @@ export default function App() {
     setCatCounts(newCounts);
   };
   return (
-    <div className="App">
-      Pediatric Anesthesiology Helper
-      <SliderInput
-        name="Age"
-        units="years old"
-        value={age}
-        min={0}
-        max={18}
-        step={0.1}
-        onChange={setAge}
+    <Container align="center" maxWidth="lg">
+      <Typography variant="h4">Pediatric Anesthesiology Helper</Typography>
+      <PatientInput
+        age={age}
+        onAgeChange={setAge}
+        weight={weight}
+        onWeightChange={setWeight}
       />
       <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
       <MedsOutput
-        categories={CATEGORIES}
-        age={age}
-        medIdSet={medIdSet}
         catCounts={catCounts}
+        categories={CATEGORIES}
+        medIdSet={medIdSet}
+        weight={weight}
       />
-    </div>
+    </Container>
   );
 }
