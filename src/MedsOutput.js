@@ -1,5 +1,8 @@
 import React from "react";
+// Resources
 import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { id } from "./data.js";
+// Components
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -44,7 +47,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MedsOutput({ categories }) {
+export default function MedsOutput({ categories, medIdSet, catCounts }) {
   const classes = useStyles();
 
   return categories.map(({ cat, meds }, i) => (
@@ -52,25 +55,30 @@ export default function MedsOutput({ categories }) {
       <Table className={classes.table} aria-label="medication dosages">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-            <StyledTableCell align="right">Calories</StyledTableCell>
-            <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
+            <StyledTableCell
+              align="center"
+              colSpan={Object.keys(meds[0].routes[0]).length + 1}
+            >
+              {cat}
+            </StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {meds.map(({ med, routes }, j) => (
-            <StyledTableRow key={j}>
-              <StyledTableCell component="th" scope="row">
-                {med}
-              </StyledTableCell>
-              {/* <StyledTableCell align="right">{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="right">{row.protein}</StyledTableCell> */}
-            </StyledTableRow>
-          ))}
+          {meds.map(({ med, routes }, j) =>
+            medIdSet.has(id(i, j))
+              ? routes.map(({ route, low, high, units }) => (
+                  <StyledTableRow key={med + route}>
+                    <StyledTableCell component="th" scope="row">
+                      {med}
+                    </StyledTableCell>
+                    <StyledTableCell>{route}</StyledTableCell>
+                    <StyledTableCell>{low}</StyledTableCell>
+                    <StyledTableCell>{high}</StyledTableCell>
+                    <StyledTableCell>{units}</StyledTableCell>
+                  </StyledTableRow>
+                ))
+              : null
+          )}
         </TableBody>
       </Table>
     </TableContainer>
