@@ -16,37 +16,6 @@ const useStyles = makeStyles({
   },
 });
 
-const genInputs = (categories, handleChange) => {
-  const inputs = [];
-  console.log(categories);
-  for (let i = 0; i < categories.length; i++) {
-    const { cat, meds } = categories[i];
-    const checkboxes = [];
-    for (let j = 0; j < meds.length; j++) {
-      const { med } = meds[j];
-      checkboxes.push(
-        <FormControlLabel
-          key={j}
-          control={
-            <Checkbox
-              name={med}
-              onChange={(_event, checked) => handleChange(i, j, checked)}
-            />
-          }
-          label={med}
-        />
-      );
-    }
-    inputs.push(
-      <div key={i}>
-        <FormLabel>{cat}</FormLabel>
-        <FormGroup>{checkboxes}</FormGroup>
-      </div>
-    );
-  }
-  return inputs;
-};
-
 export default function MedsInput({ categories, onChange }) {
   const classes = useStyles();
 
@@ -58,7 +27,25 @@ export default function MedsInput({ categories, onChange }) {
   return (
     <div className={classes.root}>
       <Typography gutterBottom>Show dosages for:</Typography>
-      {genInputs(categories, handleChange)}
+      {categories.map(({ cat, meds }, i) => (
+        <div key={i}>
+          <FormLabel>{cat}</FormLabel>
+          <FormGroup>
+            {meds.map(({ med }, j) => (
+              <FormControlLabel
+                key={j}
+                control={
+                  <Checkbox
+                    name={med}
+                    onChange={(_event, checked) => handleChange(i, j, checked)}
+                  />
+                }
+                label={med}
+              />
+            ))}
+          </FormGroup>
+        </div>
+      ))}
     </div>
   );
 }
