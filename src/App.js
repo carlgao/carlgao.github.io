@@ -4,6 +4,7 @@ import "./App.css";
 import { CATEGORIES, id } from "./data.js";
 // Components
 import MedsInput from "./MedsInput.js";
+import MedsOutput from "./MedsOutput.js";
 import SliderInput from "./SliderInput.js";
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
         onChange={setAge}
       />
       <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
+      <MedsOutput categories={CATEGORIES} age={age} medIdSet={medIdSet} />
     </div>
   );
 }
