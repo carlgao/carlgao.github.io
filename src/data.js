@@ -56,6 +56,38 @@ const CATEGORIES = [
       },
     ],
   },
+  {
+    cat: "Muscle Relaxants",
+    meds: [],
+  },
+  {
+    cat: "Muscle Relaxant Reversal",
+    meds: [],
+  },
+  {
+    cat: "Pain Medications",
+    meds: [],
+  },
+  {
+    cat: "Infusions",
+    meds: [],
+  },
+  {
+    cat: "Antibiotics *check with surgeon",
+    meds: [],
+  },
+  {
+    cat: "Antiemetic",
+    meds: [],
+  },
+  {
+    cat: "Resuscitation",
+    meds: [],
+  },
+  {
+    cat: "Anaphylaxis",
+    meds: [],
+  },
 ];
 
 const id = (i, j) => i.toString() + "," + j.toString();

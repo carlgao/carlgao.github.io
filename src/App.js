@@ -9,10 +9,10 @@ import NonMedOutput from "./NonMedOutput.js";
 import PatientInput from "./PatientInput.js";
 import Typography from "@material-ui/core/Typography";
 
-const DEBUG = true;
+const DEBUG = false;
 
-const ageDefault = DEBUG ? 1.5 : null;
-const weightDefault = DEBUG ? 6.9 : null;
+const ageDefault = DEBUG ? 1.5 : 1.5;
+const weightDefault = DEBUG ? 6.9 : 6.9;
 const medIdSetDefault = DEBUG ? new Set(["0,0", "1,0"]) : new Set();
 const catCountsDefault = DEBUG ? { 0: 1, 1: 1 } : {};
 const prematureDefault = DEBUG ? true : false;

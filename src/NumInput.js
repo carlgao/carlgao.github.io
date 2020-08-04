@@ -37,6 +37,7 @@ export default function NumInput({
             margin="dense"
             onChange={handleInputChange}
             onBlur={handleBlur}
+            onFocus={(event) => event.target.select()}
             inputProps={{
               step,
               min,

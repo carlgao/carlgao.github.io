@@ -60,7 +60,6 @@ export default function MedsOutput({
   weight,
 }) {
   const classes = useStyles();
-
   return (
     <Grid container spacing={1}>
       {categories.map(({ cat, meds }, i) =>

@@ -1,7 +1,6 @@
 import React from "react";
 // Components
 import Grid from "@material-ui/core/Grid";
-import VitalSignsOutput from "./VitalSignsOutput.js";
 
 const roundToNearestHalf = (num) => {
   return Math.round(num * 2) / 2;
