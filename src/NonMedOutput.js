@@ -1,16 +1,7 @@
 import React from "react";
-// Resources
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import { id } from "./data.js";
 // Components
 import Grid from "@material-ui/core/Grid";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+import VitalSignsOutput from "./VitalSignsOutput.js";
 
 const roundToNearestHalf = (num) => {
   return Math.round(num * 2) / 2;
@@ -18,17 +9,17 @@ const roundToNearestHalf = (num) => {
 
 const genUncuffedEttSize = (age) => {
   if (age <= 1 / 12) {
-    return "Newborn = 3-3.5mm uncuffed";
+    return "Newborn = 3-3.5mm";
   }
   if (age <= 6 / 12) {
-    return "< 6 months = 3.5mm uncuffed";
+    return "< 6 months = 3.5mm";
   }
   if (age <= 1) {
-    return "6 months to 1 year = 4mm uncuffed";
+    return "6 months to 1 year = 4mm";
   }
   const uncuffedSize = roundToNearestHalf(age / 4 + 4);
   if (uncuffedSize < 6) {
-    return "4 + age (yrs)/4 = " + uncuffedSize;
+    return "4 + age (yrs)/4 = " + uncuffedSize + "mm";
   }
   return "N/A (too old)";
 };
@@ -40,8 +31,14 @@ const genCuffedEttSize = (age) => {
 };
 
 const genEttLipToMidTrachea = (age) => {
-  // TODO
-  return "TODO";
+  if (age < 1) {
+    return "N/A (<1 yr old)";
+  }
+  const num = roundToNearestHalf(age / 2 + 12);
+  if (num >= 21) {
+    return "N/A (too old)";
+  }
+  return "Age/2+12 = " + num;
 };
 
 const genFaceMaskSize = (age) => {
@@ -61,7 +58,6 @@ const genFaceMaskSize = (age) => {
 };
 
 const genOralAirwaySize = (age, premature) => {
-  return "TODO premature input";
   if (age <= 1 / 12) {
     if (premature) {
       return "30 mm, Clear";
@@ -81,27 +77,67 @@ const genOralAirwaySize = (age, premature) => {
 };
 
 const genEbv = (age, weight, premature) => {
-  // =IF(Weight = 0, "", IF(RawAge = 0, "", IF(AND(Premature = TRUE, Age <= 1 / 12), 100 * Weight,
-  // IF(Age <= (1 / 12), 90 * Weight, IF(Age < 1, 80 * Weight, IF(Age < 6, 75 * Weight, IF(Age >= 6, 70 * Weight)))))))
-
   if (age <= 1 / 12) {
     if (premature) {
-      return 100 * weight;
+      return (100 * weight).toString();
     }
-    return 90 * weight;
+    return (90 * weight).toString();
   }
   if (age < 1) {
-    return 80 * weight;
+    return (80 * weight).toString();
   }
   if (age < 6) {
-    return 75 * weight;
+    return (75 * weight).toString();
   }
-  return 70 * weight;
+  return (70 * weight).toString();
 };
 
-// TODO const genUsePediatricCircuit =
+const genLmaSize = (age) => {
+  if (age <= 1 / 12) {
+    return "1";
+  }
+  if (age <= 6 / 12) {
+    return "1-1.5";
+  }
+  if (age <= 1) {
+    return "1.5";
+  }
+  if (age <= 6) {
+    return "2";
+  }
+  if (age <= 8) {
+    return "2.5";
+  }
+  if (age <= 12) {
+    return "3";
+  }
+  return "4";
+};
 
-export default function NonMedOutput({ age, weight }) {
+const genBladeSize = (age, premature) => {
+  if (age <= 1 / 12 && premature) {
+    return "00";
+  }
+  if (age <= 3 / 12) {
+    return "0";
+  }
+  if (age <= 18 / 12) {
+    return "1";
+  }
+  return "2";
+};
+
+const genMaintenanceIvf = (weight) => {
+  if (weight <= 10) {
+    return 4 * weight;
+  }
+  if (weight <= 20) {
+    return 40 + 2 * (weight - 10);
+  }
+  return 60 + 1 * (weight - 20);
+};
+
+export default function NonMedOutput({ age, weight, premature }) {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
@@ -121,13 +157,24 @@ export default function NonMedOutput({ age, weight }) {
         {genFaceMaskSize(age)}
       </Grid>
       <Grid item xs={12}>
-        Face Mask Size:
-        {genOralAirwaySize(age, true)}
+        Oral Airway Size:
+        {genOralAirwaySize(age, premature)}
       </Grid>
-
       <Grid item xs={12}>
-        Face Mask Size:
-        {genEbv(age, weight, true)}
+        EBV:
+        {genEbv(age, weight, premature)}
+      </Grid>
+      <Grid item xs={12}>
+        LMA Size:
+        {genLmaSize(age)}
+      </Grid>
+      <Grid item xs={12}>
+        Blade Size (Miller):
+        {genBladeSize(age, premature)}
+      </Grid>
+      <Grid item xs={12}>
+        Maintenance IVF:
+        {genMaintenanceIvf(weight)}
       </Grid>
     </Grid>
   );

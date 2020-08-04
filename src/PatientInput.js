@@ -1,8 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
-import SliderInput from "./SliderInput.js";
+import NumInput from "./NumInput.js";
 
 const useStyles = makeStyles({
   root: {
@@ -16,12 +18,14 @@ export default function PatientInput({
   onAgeChange,
   weight,
   onWeightChange,
+  premature,
+  onPrematureChange,
 }) {
   const classes = useStyles();
 
   return (
     <Grid container className={classes.root}>
-      <SliderInput
+      <NumInput
         name="Age"
         units="years or months/12"
         value={age}
@@ -30,7 +34,7 @@ export default function PatientInput({
         step={0.1}
         onChange={onAgeChange}
       />
-      <SliderInput
+      <NumInput
         name="Weight"
         units="kg"
         value={weight}
@@ -38,6 +42,16 @@ export default function PatientInput({
         max={50}
         step={0.1}
         onChange={onWeightChange}
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={premature}
+            name="Premature"
+            onChange={(_event, checked) => onPrematureChange(checked)}
+          />
+        }
+        label={"Premature"}
       />
     </Grid>
   );
