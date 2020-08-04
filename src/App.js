@@ -5,6 +5,7 @@ import { CATEGORIES, id } from "./data.js";
 import Container from "@material-ui/core/Container";
 import MedsInput from "./MedsInput.js";
 import MedsOutput from "./MedsOutput.js";
+import NonMedOutput from "./NonMedOutput.js";
 import PatientInput from "./PatientInput.js";
 import Typography from "@material-ui/core/Typography";
 
@@ -41,6 +42,7 @@ export default function App() {
         onWeightChange={setWeight}
       />
       <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
+      <NonMedOutput age={age} />
       <MedsOutput
         catCounts={catCounts}
         categories={CATEGORIES}

@@ -23,7 +23,7 @@ export default function PatientInput({
     <Grid container className={classes.root}>
       <SliderInput
         name="Age"
-        units="years old"
+        units="years or months/12"
         value={age}
         min={0}
         max={18}
