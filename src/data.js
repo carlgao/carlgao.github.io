@@ -4,13 +4,13 @@ const CATEGORIES = [
     meds: [
       {
         med: "Midazolam",
-        notes: "Use concentrated Midazolam for IM and Nasal",
         routes: [
           {
             route: "IV/IM",
             low: 0.05,
             high: 0.1,
             units: "mg",
+            notes: "Use concentrated Midazolam for IM and Nasal",
           },
           {
             route: "PO",
@@ -23,6 +23,7 @@ const CATEGORIES = [
             low: 0.2,
             high: 0.3,
             units: "mg",
+            notes: "Use concentrated Midazolam for IM and Nasal",
           },
         ],
       },

@@ -22,6 +22,12 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
+const BoldStyledTableCell = withStyles((theme) => ({
+  body: {
+    fontWeight: "bold",
+  },
+}))(TableCell);
+
 const StyledTableRow = withStyles((theme) => ({
   root: {
     "&:nth-of-type(odd)": {
@@ -32,9 +38,20 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles({
   table: {
-    maxWidth: 400,
+    maxWidth: 500,
   },
 });
+
+const round = (num) => Math.round(num * 100) / 100;
+
+const genDosage = (low, high, weight, units) => {
+  if (high) {
+    return (
+      round(low * weight).toString() + "-" + round(high * weight) + " " + units
+    );
+  }
+  return round(low * weight).toString() + units;
+};
 
 export default function MedsOutput({
   catCounts,
@@ -48,14 +65,14 @@ export default function MedsOutput({
     <Grid container spacing={1}>
       {categories.map(({ cat, meds }, i) =>
         catCounts[i] !== undefined && catCounts[i] > 0 ? (
-          <Grid item xs={12} lg={4} key={i}>
+          <Grid item xs={12} lg={6} key={i}>
             <TableContainer className={classes.table} component={Paper}>
               <Table aria-label="medication dosages">
                 <colgroup>
-                  <col width="45%" />
+                  <col width="30%" />
                   <col width="10%" />
-                  <col width="40%" />
-                  <col width="5%" />
+                  <col width="30%" />
+                  <col width="30%" />
                 </colgroup>
                 <TableHead>
                   <TableRow>
@@ -76,11 +93,12 @@ export default function MedsOutput({
                               {med}
                             </StyledTableCell>
                             <StyledTableCell>{route}</StyledTableCell>
-                            <StyledTableCell align="right">
-                              {Math.round(low * weight * 100) / 100} -{" "}
-                              {Math.round(high * weight * 100) / 100}
+                            <StyledTableCell>
+                              {low}-{high} {units}/kg
                             </StyledTableCell>
-                            <StyledTableCell>{units}</StyledTableCell>
+                            <BoldStyledTableCell align="right">
+                              {genDosage(low, high, weight, units)}
+                            </BoldStyledTableCell>
                           </StyledTableRow>
                         ))
                       : null
