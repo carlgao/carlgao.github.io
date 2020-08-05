@@ -26,31 +26,31 @@ export default function NumInput({
   };
 
   return (
-    <>
-      <Typography id="num-input" align="center" gutterBottom>
-        {name}
-      </Typography>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item>
-          <Input
-            value={value}
-            margin="dense"
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            onFocus={(event) => event.target.select()}
-            inputProps={{
-              step,
-              min,
-              max,
-              type: "number",
-              "aria-labelledby": "num-input",
-            }}
-          />
-        </Grid>
-        <Grid item>
-          <Typography align="left">{units}</Typography>
-        </Grid>
+    <Grid container item alignItems="center">
+      <Grid item xs={12}>
+        <Typography id="num-input" align="left" gutterBottom>
+          {name}
+        </Typography>
       </Grid>
-    </>
+      <Grid item>
+        <Input
+          value={value}
+          margin="dense"
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          onFocus={(event) => event.target.select()}
+          inputProps={{
+            step,
+            min,
+            max,
+            type: "number",
+            "aria-labelledby": "num-input",
+          }}
+        />
+      </Grid>
+      <Grid item>
+        <Typography align="left">{units}</Typography>
+      </Grid>
+    </Grid>
   );
 }

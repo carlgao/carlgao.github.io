@@ -138,7 +138,7 @@ const genMaintenanceIvf = (weight) => {
 
 export default function NonMedOutput({ age, weight, premature }) {
   return (
-    <Grid container spacing={1}>
+    <Grid container item spacing={1} xs>
       <Grid item xs={12}>
         Cuffed:
         {genCuffedEttSize(age)}

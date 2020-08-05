@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { CATEGORIES, id } from "./data.js";
 // Components
 import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
 import MedsInput from "./MedsInput.js";
 import MedsOutput from "./MedsOutput.js";
 import NonMedOutput from "./NonMedOutput.js";
@@ -42,7 +43,7 @@ export default function App() {
     setCatCounts(newCounts);
   };
   return (
-    <Container align="center" maxWidth="lg">
+    <Container align="center" maxWidth={false}>
       <Typography variant="h4">Pediatric Anesthesiology Helper</Typography>
       <PatientInput
         age={age}
@@ -52,8 +53,8 @@ export default function App() {
         premature={premature}
         onPrematureChange={setPremature}
       />
-      <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
       <NonMedOutput age={age} weight={weight} premature={premature} />
+      <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
       <MedsOutput
         catCounts={catCounts}
         categories={CATEGORIES}
