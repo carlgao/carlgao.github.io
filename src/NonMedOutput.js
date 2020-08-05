@@ -1,5 +1,8 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 // Components
+import Box from "@material-ui/core/Box";
+import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 
 const roundToNearestHalf = (num) => {
@@ -136,45 +139,63 @@ const genMaintenanceIvf = (weight) => {
   return 60 + 1 * (weight - 20);
 };
 
+const useStyles = makeStyles({
+  card: {
+    display: "inline-block",
+  },
+  nonMedOutput: {
+    display: "inline-block",
+    verticalAlign: "top",
+  },
+});
+
 export default function NonMedOutput({ age, weight, premature }) {
+  const classes = useStyles();
+
   return (
-    <Grid container item spacing={1} xs>
-      <Grid item xs={12}>
-        Cuffed:
-        {genCuffedEttSize(age)}
-      </Grid>
-      <Grid item xs={12}>
-        Uncuffed:
-        {genUncuffedEttSize(age)}
-      </Grid>
-      <Grid item xs={12}>
-        ETT @ lip to mid trachea:
-        {genEttLipToMidTrachea(age)}
-      </Grid>
-      <Grid item xs={12}>
-        Face Mask Size:
-        {genFaceMaskSize(age)}
-      </Grid>
-      <Grid item xs={12}>
-        Oral Airway Size:
-        {genOralAirwaySize(age, premature)}
-      </Grid>
-      <Grid item xs={12}>
-        EBV:
-        {genEbv(age, weight, premature)}
-      </Grid>
-      <Grid item xs={12}>
-        LMA Size:
-        {genLmaSize(age)}
-      </Grid>
-      <Grid item xs={12}>
-        Blade Size (Miller):
-        {genBladeSize(age, premature)}
-      </Grid>
-      <Grid item xs={12}>
-        Maintenance IVF:
-        {genMaintenanceIvf(weight)}
-      </Grid>
-    </Grid>
+    <Box className={classes.nonMedOutput}>
+      <Card raised className={classes.card}>
+        <Grid item xs={12}>
+          Cuffed:
+          {genCuffedEttSize(age)}
+        </Grid>
+        <Grid item xs={12}>
+          Uncuffed:
+          {genUncuffedEttSize(age)}
+        </Grid>
+        <Grid item xs={12}>
+          ETT @ lip to mid trachea:
+          {genEttLipToMidTrachea(age)}
+        </Grid>
+      </Card>
+      <Card raised className={classes.card}>
+        <Grid item xs={12}>
+          Face Mask Size:
+          {genFaceMaskSize(age)}
+        </Grid>
+        <Grid item xs={12}>
+          Oral Airway Size:
+          {genOralAirwaySize(age, premature)}
+        </Grid>
+        <Grid item xs={12}>
+          EBV:
+          {genEbv(age, weight, premature)}
+        </Grid>
+      </Card>
+      <Card raised className={classes.card}>
+        <Grid item xs={12}>
+          LMA Size:
+          {genLmaSize(age)}
+        </Grid>
+        <Grid item xs={12}>
+          Blade Size (Miller):
+          {genBladeSize(age, premature)}
+        </Grid>
+        <Grid item xs={12}>
+          Maintenance IVF:
+          {genMaintenanceIvf(weight)}
+        </Grid>
+      </Card>
+    </Box>
   );
 }

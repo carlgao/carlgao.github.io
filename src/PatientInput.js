@@ -10,7 +10,7 @@ import NumInput from "./NumInput.js";
 const useStyles = makeStyles({
   patientInput: {
     display: "inline-block",
-    padding: 8,
+    padding: 16,
   },
 });
 

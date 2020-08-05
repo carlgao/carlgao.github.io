@@ -49,7 +49,7 @@ export default function NumInput({
         />
       </Grid>
       <Grid item>
-        <Typography align="left">{units}</Typography>
+        <Typography>{units}</Typography>
       </Grid>
     </Grid>
   );
