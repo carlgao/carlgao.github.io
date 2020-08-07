@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // Resources
 import { CATEGORIES, id } from "./data.js";
+import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -18,6 +19,14 @@ const weightDefault = DEBUG ? 6.9 : 6.9;
 const medIdSetDefault = DEBUG ? new Set(["0,0", "1,0"]) : new Set();
 const catCountsDefault = DEBUG ? { 0: 1, 1: 1 } : {};
 const prematureDefault = DEBUG ? true : false;
+
+const useStyles = makeStyles({
+  root: { backgroundColor: "#EEEEEE" },
+  title: {
+    paddingBottom: 12,
+    paddingTop: 12,
+  },
+});
 
 export default function App() {
   const [years, setYears] = useState(yearsDefault);
@@ -54,9 +63,13 @@ export default function App() {
     setCatCounts(newCounts);
   };
 
+  const classes = useStyles();
+
   return (
-    <Container maxWidth={false} style={{ backgroundColor: "#EEEEEE" }}>
-      <Typography variant="h4">Pediatric Anesthesiology Helper</Typography>
+    <Container maxWidth={false} className={classes.root}>
+      <Typography className={classes.title} variant="h6">
+        Pediatric Anesthesiology Helper
+      </Typography>
       <div>
         <PatientInput
           years={years}

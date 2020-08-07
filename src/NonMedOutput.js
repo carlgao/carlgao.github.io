@@ -164,6 +164,7 @@ export default function NonMedOutput({ age, weight, premature }) {
           ["Face Mask Size", genFaceMaskSize(age)],
           ["Oral Airway Size", genOralAirwaySize(age, premature)],
           ["LMA Size", genLmaSize(age)],
+          ["Blade Size (Miller)", genBladeSize(age, premature)],
         ]}
       />
       <StripedTable
@@ -171,7 +172,6 @@ export default function NonMedOutput({ age, weight, premature }) {
         headColor="#FFDCF4"
         rows={[
           ["EBV", genEbv(age, weight, premature)],
-          ["Blade Size (Miller)", genBladeSize(age, premature)],
           ["Maintenance IVF", genMaintenanceIvf(weight)],
         ]}
       />
