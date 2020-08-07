@@ -7,6 +7,7 @@ const useStyles = makeStyles({
   root: {
     display: "inline-block",
     marginRight: 24,
+    marginBottom: 24,
     verticalAlign: "top",
   },
 });
