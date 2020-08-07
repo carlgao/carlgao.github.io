@@ -2,8 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Box from "@material-ui/core/Box";
-import Card from "@material-ui/core/Card";
-import Grid from "@material-ui/core/Grid";
+import StripedTable from "./StripedTable";
 
 const roundToNearestHalf = (num) => {
   return Math.round(num * 2) / 2;
@@ -11,25 +10,29 @@ const roundToNearestHalf = (num) => {
 
 const genUncuffedEttSize = (age) => {
   if (age <= 1 / 12) {
-    return "Newborn = 3-3.5mm";
+    // return "Newborn = 3-3.5mm";
+    return "3-3.5mm";
   }
   if (age <= 6 / 12) {
-    return "< 6 months = 3.5mm";
+    // return "< 6 months = 3.5mm";
+    return "3.5mm";
   }
   if (age <= 1) {
-    return "6 months to 1 year = 4mm";
+    // return "6 months to 1 year = 4mm";
+    return "4mm";
   }
   const uncuffedSize = roundToNearestHalf(age / 4 + 4);
   if (uncuffedSize < 6) {
-    return "4 + age (yrs)/4 = " + uncuffedSize + "mm";
+    // return "4 + age (yrs)/4 = " + uncuffedSize + "mm";
+    return uncuffedSize + "mm";
   }
   return "N/A (too old)";
 };
 
 const genCuffedEttSize = (age) => {
   return age > 1
-    ? roundToNearestHalf(age / 4 + 3.5).toString()
-    : "N/A (<1 yr old)";
+    ? roundToNearestHalf(age / 4 + 3.5).toString() + "mm"
+    : "N/A (≤1 yr old)";
 };
 
 const genEttLipToMidTrachea = (age) => {
@@ -40,7 +43,8 @@ const genEttLipToMidTrachea = (age) => {
   if (num >= 21) {
     return "N/A (too old)";
   }
-  return "Age/2+12 = " + num;
+  // return "Age/2+12 = " + num;
+  return num.toString();
 };
 
 const genFaceMaskSize = (age) => {
@@ -140,10 +144,7 @@ const genMaintenanceIvf = (weight) => {
 };
 
 const useStyles = makeStyles({
-  card: {
-    display: "inline-block",
-  },
-  nonMedOutput: {
+  root: {
     display: "inline-block",
     verticalAlign: "top",
   },
@@ -151,51 +152,29 @@ const useStyles = makeStyles({
 
 export default function NonMedOutput({ age, weight, premature }) {
   const classes = useStyles();
-
   return (
-    <Box className={classes.nonMedOutput}>
-      <Card raised className={classes.card}>
-        <Grid item xs={12}>
-          Cuffed:
-          {genCuffedEttSize(age)}
-        </Grid>
-        <Grid item xs={12}>
-          Uncuffed:
-          {genUncuffedEttSize(age)}
-        </Grid>
-        <Grid item xs={12}>
-          ETT @ lip to mid trachea:
-          {genEttLipToMidTrachea(age)}
-        </Grid>
-      </Card>
-      <Card raised className={classes.card}>
-        <Grid item xs={12}>
-          Face Mask Size:
-          {genFaceMaskSize(age)}
-        </Grid>
-        <Grid item xs={12}>
-          Oral Airway Size:
-          {genOralAirwaySize(age, premature)}
-        </Grid>
-        <Grid item xs={12}>
-          EBV:
-          {genEbv(age, weight, premature)}
-        </Grid>
-      </Card>
-      <Card raised className={classes.card}>
-        <Grid item xs={12}>
-          LMA Size:
-          {genLmaSize(age)}
-        </Grid>
-        <Grid item xs={12}>
-          Blade Size (Miller):
-          {genBladeSize(age, premature)}
-        </Grid>
-        <Grid item xs={12}>
-          Maintenance IVF:
-          {genMaintenanceIvf(weight)}
-        </Grid>
-      </Card>
-    </Box>
+    <div className={classes.root}>
+      <StripedTable
+        title="Airway"
+        headColor="#DCFFFB"
+        rows={[
+          ["ETT Size Cuffed", genCuffedEttSize(age)],
+          ["ETT Size Uncuffed", genUncuffedEttSize(age)],
+          ["ETT @ lip to mid trachea", genEttLipToMidTrachea(age)],
+          ["Face Mask Size", genFaceMaskSize(age)],
+          ["Oral Airway Size", genOralAirwaySize(age, premature)],
+          ["LMA Size", genLmaSize(age)],
+        ]}
+      />
+      <StripedTable
+        title="Other Info"
+        headColor="#FFDCF4"
+        rows={[
+          ["EBV", genEbv(age, weight, premature)],
+          ["Blade Size (Miller)", genBladeSize(age, premature)],
+          ["Maintenance IVF", genMaintenanceIvf(weight)],
+        ]}
+      />
+    </div>
   );
 }

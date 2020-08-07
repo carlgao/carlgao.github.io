@@ -1,22 +1,32 @@
 import React from "react";
+import { borders } from "@material-ui/system";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
-import Card from "@material-ui/core/Card";
 import Checkbox from "@material-ui/core/Checkbox";
+import CustomCard from "./CustomCard";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Grid from "@material-ui/core/Grid";
-import NumInput from "./NumInput.js";
+import AgeInput from "./AgeInput.js";
+import WeightInput from "./WeightInput.js";
 
 const useStyles = makeStyles({
-  patientInput: {
+  root: {
+    backgroundColor: "beige",
     display: "inline-block",
     padding: 16,
+  },
+  prematureInput: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    marginLeft: 0,
+    paddingRight: 8,
   },
 });
 
 export default function PatientInput({
-  age,
-  onAgeChange,
+  years,
+  onYearsChange,
+  months,
+  onMonthsChange,
   weight,
   onWeightChange,
   premature,
@@ -24,37 +34,25 @@ export default function PatientInput({
 }) {
   const classes = useStyles();
   return (
-    <Card raised className={classes.patientInput}>
-      <Grid container spacing={2}>
-        <NumInput
-          name="Age"
-          units="years or months/12"
-          value={age}
-          min={0}
-          max={18}
-          step={0.1}
-          onChange={onAgeChange}
-        />
-        <NumInput
-          name="Weight"
-          units="kg"
-          value={weight}
-          min={0}
-          max={50}
-          step={0.1}
-          onChange={onWeightChange}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={premature}
-              name="Premature"
-              onChange={(_event, checked) => onPrematureChange(checked)}
-            />
-          }
-          label={"Premature"}
-        />
-      </Grid>
-    </Card>
+    <CustomCard className={classes.root}>
+      <AgeInput
+        years={years}
+        onYearsChange={onYearsChange}
+        months={months}
+        onMonthsChange={onMonthsChange}
+      />
+      <WeightInput weight={weight} onChange={onWeightChange} />
+      <FormControlLabel
+        className={classes.prematureInput}
+        control={
+          <Checkbox
+            checked={premature}
+            name="Premature"
+            onChange={(_event, checked) => onPrematureChange(checked)}
+          />
+        }
+        label={"Premature"}
+      />
+    </CustomCard>
   );
 }

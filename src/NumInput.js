@@ -1,20 +1,34 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 // Components
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import Input from "@material-ui/core/Input";
+import Typography from "@material-ui/core/Typography";
+
+const useStyles = makeStyles({
+  input: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    marginRight: "0.3em",
+    marginBottom: 12,
+  },
+  units: {
+    display: "inline-block",
+    marginRight: "0.3em",
+  },
+});
 
 export default function NumInput({
-  name,
-  units,
+  ariaLabel,
   value,
   min,
   max,
-  step,
+  step = 1,
   onChange,
+  units,
 }) {
-  const handleInputChange = (event) => {
-    onChange(event.target.value === "" ? "" : Number(event.target.value));
+  const classes = useStyles();
+  const handleChange = (event) => {
+    onChange(event.target.value === "" ? null : Number(event.target.value));
   };
 
   const handleBlur = () => {
@@ -26,31 +40,23 @@ export default function NumInput({
   };
 
   return (
-    <Grid container item alignItems="center">
-      <Grid item xs={12}>
-        <Typography id="num-input" align="left" gutterBottom>
-          {name}
-        </Typography>
-      </Grid>
-      <Grid item>
-        <Input
-          value={value}
-          margin="dense"
-          onChange={handleInputChange}
-          onBlur={handleBlur}
-          onFocus={(event) => event.target.select()}
-          inputProps={{
-            step,
-            min,
-            max,
-            type: "number",
-            "aria-labelledby": "num-input",
-          }}
-        />
-      </Grid>
-      <Grid item>
-        <Typography>{units}</Typography>
-      </Grid>
-    </Grid>
+    <>
+      <Input
+        className={classes.input}
+        value={value === null ? "" : value}
+        margin="dense"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onFocus={(event) => event.target.select()}
+        inputProps={{
+          min,
+          max,
+          step,
+          type: "number",
+          "aria-label": ariaLabel,
+        }}
+      />
+      <Typography className={classes.units}>{units}</Typography>
+    </>
   );
 }

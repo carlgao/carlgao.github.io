@@ -12,18 +12,29 @@ import Typography from "@material-ui/core/Typography";
 
 const DEBUG = false;
 
-const ageDefault = DEBUG ? 1.5 : 1.5;
+const yearsDefault = DEBUG ? 1.5 : 1.5;
+const monthsDefault = yearsDefault * 12;
 const weightDefault = DEBUG ? 6.9 : 6.9;
 const medIdSetDefault = DEBUG ? new Set(["0,0", "1,0"]) : new Set();
 const catCountsDefault = DEBUG ? { 0: 1, 1: 1 } : {};
 const prematureDefault = DEBUG ? true : false;
 
 export default function App() {
-  const [age, setAge] = useState(ageDefault);
+  const [years, setYears] = useState(yearsDefault);
+  const [months, setMonths] = useState(monthsDefault);
   const [weight, setWeight] = useState(weightDefault);
   const [medIdSet, setMedIdSet] = useState(medIdSetDefault);
   const [catCounts, setCatCounts] = useState(catCountsDefault);
   const [premature, setPremature] = useState(prematureDefault);
+
+  const handleYearsChange = (years) => {
+    setYears(years);
+    setMonths(years === null ? null : years * 12);
+  };
+  const handleMonthsChange = (months) => {
+    setMonths(months);
+    setYears(months === null ? null : months / 12);
+  };
 
   const handleMedChange = (i, j, checked) => {
     const newSet = new Set(medIdSet);
@@ -42,18 +53,23 @@ export default function App() {
     setMedIdSet(newSet);
     setCatCounts(newCounts);
   };
+
   return (
-    <Container align="center" maxWidth={false}>
+    <Container maxWidth={false} style={{ backgroundColor: "#EEEEEE" }}>
       <Typography variant="h4">Pediatric Anesthesiology Helper</Typography>
-      <PatientInput
-        age={age}
-        onAgeChange={setAge}
-        weight={weight}
-        onWeightChange={setWeight}
-        premature={premature}
-        onPrematureChange={setPremature}
-      />
-      <NonMedOutput age={age} weight={weight} premature={premature} />
+      <div>
+        <PatientInput
+          years={years}
+          onYearsChange={handleYearsChange}
+          months={months}
+          onMonthsChange={handleMonthsChange}
+          weight={weight}
+          onWeightChange={setWeight}
+          premature={premature}
+          onPrematureChange={setPremature}
+        />
+        <NonMedOutput age={months / 12} weight={weight} premature={premature} />
+      </div>
       <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
       <MedsOutput
         catCounts={catCounts}
