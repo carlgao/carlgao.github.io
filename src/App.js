@@ -50,6 +50,7 @@ export default function App() {
   const [bottom, setBottom] = useState(null);
   const bottomObserver = useRef(null);
   const medsOutputRef = useRef(null);
+  const scrollToMedsOutput = () => scrollToRef(medsOutputRef);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -163,10 +164,7 @@ export default function App() {
         </div>
       </Container>
       {!dosagesVisible && medIdSet.size > 0 ? (
-        <div
-          className={classes.sticky}
-          onClick={() => scrollToRef(medsOutputRef)}
-        >
+        <div className={classes.sticky} onClick={scrollToMedsOutput}>
           Show Dosages!
         </div>
       ) : null}
