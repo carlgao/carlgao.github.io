@@ -9,7 +9,7 @@ const roundToNearestHalf = (num) => {
 };
 
 const genUncuffedEttSize = (age) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -33,7 +33,7 @@ const genUncuffedEttSize = (age) => {
 };
 
 const genCuffedEttSize = (age) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   return age > 1
@@ -42,7 +42,7 @@ const genCuffedEttSize = (age) => {
 };
 
 const genEttLipToMidTrachea = (age) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age < 1) {
@@ -57,7 +57,7 @@ const genEttLipToMidTrachea = (age) => {
 };
 
 const genFaceMaskSize = (age) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -76,7 +76,7 @@ const genFaceMaskSize = (age) => {
 };
 
 const genOralAirwaySize = (age, premature) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -98,7 +98,7 @@ const genOralAirwaySize = (age, premature) => {
 };
 
 const genEbv = (age, weight, premature) => {
-  if (age == 0 || weight == 0) {
+  if (age === 0 || weight === 0) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -117,7 +117,7 @@ const genEbv = (age, weight, premature) => {
 };
 
 const genLmaSize = (age) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -142,7 +142,7 @@ const genLmaSize = (age) => {
 };
 
 const genBladeSize = (age, premature) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -158,7 +158,7 @@ const genBladeSize = (age, premature) => {
 };
 
 const genMaintenanceIvf = (weight) => {
-  if (weight == 0) {
+  if (weight === 0) {
     return "-";
   }
   if (weight <= 10) {
@@ -171,7 +171,7 @@ const genMaintenanceIvf = (weight) => {
 };
 
 const genSbp = (age, premature) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -199,7 +199,7 @@ const genSbp = (age, premature) => {
 };
 
 const genDbp = (age, premature) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -221,7 +221,7 @@ const genDbp = (age, premature) => {
 };
 
 const genHr = (age, premature) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -249,7 +249,7 @@ const genHr = (age, premature) => {
 };
 
 const genRr = (age, premature) => {
-  if (age == 0) {
+  if (age === 0) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -295,21 +295,21 @@ export default function NonMedOutput({ age, weight, premature }) {
         ]}
       />
       <StripedTable
-        title="Other Info"
-        headColor="#FFDCF4"
-        rows={[
-          ["EBV", genEbv(age, weight, premature)],
-          ["Maintenance IVF", genMaintenanceIvf(weight)],
-        ]}
-      />
-      <StripedTable
         title="Hemodynamic Parameters"
-        headColor="#E2F0CB"
+        headColor="#FFABAB"
         rows={[
           ["SBP", genSbp(age, premature)],
           ["DBP", genDbp(age, premature)],
           ["HR", genHr(age, premature)],
           ["RR", genRr(age, premature)],
+        ]}
+      />
+      <StripedTable
+        title="Other"
+        headColor="#FFDCF4"
+        rows={[
+          ["EBV", genEbv(age, weight, premature)],
+          ["Maintenance IVF", genMaintenanceIvf(weight)],
         ]}
       />
     </div>

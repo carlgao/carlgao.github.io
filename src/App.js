@@ -21,7 +21,6 @@ const catCountsDefault = DEBUG ? { 0: 1, 1: 1 } : {};
 const prematureDefault = DEBUG ? true : false;
 
 const useStyles = makeStyles({
-  root: { backgroundColor: "#EEEEEE" },
   title: {
     paddingBottom: 12,
     paddingTop: 12,
@@ -66,7 +65,7 @@ export default function App() {
   const classes = useStyles();
 
   return (
-    <Container maxWidth={false} className={classes.root}>
+    <Container maxWidth={false}>
       <Typography className={classes.title} variant="h6">
         Pediatric Anesthesiology Helper
       </Typography>
@@ -81,13 +80,14 @@ export default function App() {
           premature={premature}
           onPrematureChange={setPremature}
         />
-        <NonMedOutput age={months / 12} weight={weight} premature={premature} />
+        <NonMedOutput age={years} weight={weight} premature={premature} />
       </div>
       <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
       <MedsOutput
         catCounts={catCounts}
         categories={CATEGORIES}
         medIdSet={medIdSet}
+        age={years}
         weight={weight}
       />
     </Container>

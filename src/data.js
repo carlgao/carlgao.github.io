@@ -14,9 +14,9 @@ const CATEGORIES = [
           },
           {
             route: "PO",
-            low: 0.25,
-            high: 0.5,
+            low: 0.5,
             units: "mg",
+            max: 20,
           },
           {
             route: "Nasal",
@@ -58,7 +58,31 @@ const CATEGORIES = [
   },
   {
     cat: "Muscle Relaxants",
-    meds: [],
+    meds: [
+      {
+        med: "Succinylcholine",
+        routes: [
+          {
+            route: "IV",
+            customFormula: {
+              str: "<1y: 2-3 mg/kg, >1y: 1-2 mg/kg",
+              func: (age, weight) => {
+                if (age === 0 || weight === 0) return "";
+                return `${roundToHundredth(
+                  age < 1 ? 2 * weight : weight
+                )}-${roundToHundredth(age < 1 ? 3 * weight : 2 * weight)} mg`;
+              },
+            },
+          },
+          {
+            route: "IM",
+            low: 4,
+            high: 5,
+            units: "mg",
+          },
+        ],
+      },
+    ],
   },
   {
     cat: "Muscle Relaxant Reversal",
@@ -92,4 +116,6 @@ const CATEGORIES = [
 
 const id = (i, j) => i.toString() + "," + j.toString();
 
-export { CATEGORIES, id };
+const roundToHundredth = (num) => Math.round(num * 100) / 100;
+
+export { CATEGORIES, id, roundToHundredth };

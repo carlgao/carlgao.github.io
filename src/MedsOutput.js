@@ -1,40 +1,71 @@
 import React from "react";
 // Resources
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import { id } from "./data.js";
+import { id, roundToHundredth } from "./data.js";
 // Components
 import StripedTable from "./StripedTable";
-import TableCell from "@material-ui/core/TableCell";
 
-const roundToHundredth = (num) => Math.round(num * 100) / 100;
-
-const genDosage = (low, high, weight, units) => {
-  if (high) {
-    return (
-      roundToHundredth(low * weight).toString() +
-      "-" +
-      roundToHundredth(high * weight) +
-      " " +
-      units
-    );
-  }
-  return roundToHundredth(low * weight).toString() + units;
+const genDefaultFormula = (low, high, max, units) => {
+  const formula =
+    high !== undefined ? `${low}-${high} ${units}/kg` : `${low} ${units}/kg`;
+  return max !== undefined ? `${formula} (max ${max} ${units})` : formula;
 };
 
-const genRows = (i, meds, medIdSet, weight) => {
+const genDefaultDosage = (weight, low, high, max, units) => {
+  if (max === undefined) {
+    max = Number.MAX_SAFE_INTEGER;
+  }
+
+  const lowDose = roundToHundredth(low * weight);
+  if (lowDose >= max) {
+    return `${max} ${units}`;
+  }
+
+  if (high === undefined) {
+    return `${lowDose} ${units}`;
+  }
+
+  const highDose = roundToHundredth(high * weight);
+  if (highDose >= max) {
+    return `${lowDose}-${max} ${units}`;
+  }
+  return `${lowDose}-${highDose} ${units}`;
+};
+
+const genRows = (i, meds, medIdSet, age, weight) => {
   let rows = [];
   meds.map(({ med, routes }, j) =>
     medIdSet.has(id(i, j))
-      ? routes.map(({ route, low, high, units }) =>
+      ? routes.map(({ route, low, high, max, units, customFormula, notes }) => {
+          let formula;
+          let dosage;
+          if (customFormula !== undefined) {
+            if (
+              low !== undefined ||
+              high !== undefined ||
+              units !== undefined ||
+              max !== undefined
+            ) {
+              console.log(
+                "Warning: custom formula provided but default keys provided as well"
+              );
+            }
+            formula = customFormula.str;
+            dosage = customFormula.func(age, weight);
+          } else {
+            formula = genDefaultFormula(low, high, max, units);
+            dosage = genDefaultDosage(weight, low, high, max, units);
+          }
           rows.push([
             med,
             route,
-            `${low}-${high} ${units}/kg`,
+            formula,
             <div style={{ textAlign: "right", fontWeight: "bold" }}>
-              {genDosage(low, high, weight, units)}
+              {dosage}
             </div>,
-          ])
-        )
+            notes,
+          ]);
+        })
       : null
   );
   return rows;
@@ -44,13 +75,17 @@ export default function MedsOutput({
   catCounts,
   categories,
   medIdSet,
+  age,
   weight,
 }) {
   return (
     <>
       {categories.map(({ cat, meds }, i) =>
         catCounts[i] !== undefined && catCounts[i] > 0 ? (
-          <StripedTable title={cat} rows={genRows(i, meds, medIdSet, weight)} />
+          <StripedTable
+            title={cat}
+            rows={genRows(i, meds, medIdSet, age, weight)}
+          />
         ) : null
       )}
     </>

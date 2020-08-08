@@ -22,7 +22,7 @@
 
 # Todo
 
-- Match vertical height of Patient Input to Airway (100% of parent?)
+- check max dose, genDefaultDosage overall, custom dosage formulas
 - Show \* and \*\* notes
 
 # Flourishes
