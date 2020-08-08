@@ -34,6 +34,8 @@
 
 # Flourishes
 
+- Change color of clickable components on hover?
+- Refactor app.js into more modular components?
 - Animate sticky button; other animations; etc
 - Weight input as lbs
 - Favicon

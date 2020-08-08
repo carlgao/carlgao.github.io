@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { CATEGORIES, id } from "./data.js";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
+import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
 import MedsInput from "./MedsInput.js";
@@ -51,7 +52,6 @@ export default function App() {
   const bottomObserver = useRef(null);
   const dosagesRef = useRef(null);
   const handleClickShowDosages = () => {
-    setDosagesVisible(true);
     scrollToRef(dosagesRef);
   };
 
@@ -166,9 +166,13 @@ export default function App() {
         </div>
       </Container>
       {!dosagesVisible && medIdSet.size > 0 ? (
-        <div className={classes.sticky} onClick={handleClickShowDosages}>
+        <Button
+          variant="contained"
+          className={classes.sticky}
+          onClick={handleClickShowDosages}
+        >
           Show Dosages!
-        </div>
+        </Button>
       ) : null}
     </>
   );
