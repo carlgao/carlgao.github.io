@@ -22,8 +22,9 @@
 
 # Todo
 
+- NonMedOutput formulas
 - check max dose, genDefaultDosage overall, custom dosage formulas
-- Show \* and \*\* notes
+- Show \* and \*\* notes as popover?
 
 # Flourishes
 

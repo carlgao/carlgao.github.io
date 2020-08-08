@@ -40,14 +40,20 @@ const CATEGORIES = [
       },
       {
         med: "Concent. Ketamine**",
-        routes: [{ route: "IV", low: 3, high: 7, units: "mg" }],
+        routes: [
+          {
+            route: "IV",
+            low: 3,
+            high: 7,
+            units: "mg",
+            notes:
+              "consider including Glyco 10-15 mcg/kg up to 0.2mg and Versed IM dose in same syringe",
+          },
+        ],
       },
       {
         med: "Dexmedetomidine",
-        routes: [
-          { route: "IV", low: 0.3, high: 2, units: "mcg" },
-          { route: "Nasal", low: 1, high: 3, units: "mcg" },
-        ],
+        routes: [{ route: "IV", low: 0.3, high: 2, units: "mg" }],
       },
     ],
   },
@@ -65,10 +71,7 @@ const CATEGORIES = [
           },
         ],
       },
-      {
-        med: "Etomidate",
-        routes: [{ route: "IV", low: 0.3, units: "mg" }],
-      },
+      { med: "Etomidate", routes: [{ route: "IV", low: 0.3, units: "mg" }] },
       {
         med: "Ketamine",
         routes: [{ route: "IV", low: 2, high: 3, units: "mg" }],
@@ -109,10 +112,7 @@ const CATEGORIES = [
         med: "Rocuronium",
         routes: [{ route: "IV", low: 0.6, high: 1.2, units: "mg" }],
       },
-      {
-        med: "Vecuronium",
-        routes: [{ route: "IV", low: 0.1, units: "mg" }],
-      },
+      { med: "Vecuronium", routes: [{ route: "IV", low: 0.1, units: "mg" }] },
     ],
   },
   {
@@ -126,7 +126,27 @@ const CATEGORIES = [
         med: "Neostigmine",
         routes: [{ route: "IV", low: 0.035, high: 0.075, units: "mg" }],
       },
-      { med: "Sugammadex", routes: [{ route: "IV", customFormula: {} }] },
+      {
+        med: "Sugammadex",
+        routes: [
+          {
+            route: "IV (TOF≥2)",
+            low: 2,
+            units: "mg",
+          },
+          {
+            route: "IV (TOF<2)",
+            low: 4,
+            units: "mg",
+          },
+          {
+            route: "IV (immediate reversal)",
+            low: 16,
+            units: "mg",
+            notes: "if approved by Attng",
+          },
+        ],
+      },
     ],
   },
   {
@@ -139,9 +159,9 @@ const CATEGORIES = [
       {
         med: "Fentanyl",
         routes: [
-          { route: "IV", low: 0.5, high: 1, units: "mcg" },
-          { route: "Nasal", low: 2, units: "mcg" },
-          { route: "Post-op", low: 0.5, units: "mcg" },
+          { route: "IV", low: 0.5, high: 1, units: "mg" },
+          { route: "Nasal", low: 2, units: "mg" },
+          { route: "Post-op", low: 0.5, units: "mg" },
         ],
       },
       {
@@ -230,15 +250,15 @@ const CATEGORIES = [
     meds: [
       {
         med: "Ampicillin (Q4)",
-        routes: [{ route: "IV", low: 50, units: "mg" }],
+        routes: [{ route: "IV", low: 50, max: 3000, units: "mg" }],
       },
       {
         med: "Cefazolin (Q4)",
-        routes: [{ route: "IV", low: 30, units: "mg" }],
+        routes: [{ route: "IV", low: 30, max: 2000, units: "mg" }],
       },
       {
         med: "Cefotaxime (Q3)",
-        routes: [{ route: "IV", low: 50, units: "mg" }],
+        routes: [{ route: "IV", low: 50, max: 1000, units: "mg" }],
       },
       {
         med: "Cefoxitin (Q4)",
@@ -246,7 +266,7 @@ const CATEGORIES = [
       },
       {
         med: "Clindamycin (Q6)",
-        routes: [{ route: "IV", low: 10, units: "mg" }],
+        routes: [{ route: "IV", low: 10, max: 900, units: "mg" }],
       },
       {
         med: "Gentamicin (Q8)",
@@ -254,15 +274,15 @@ const CATEGORIES = [
       },
       {
         med: "Vancomycin (Q12)",
-        routes: [{ route: "IV", low: 15, units: "mg" }],
+        routes: [{ route: "IV", low: 15, max: 1500, units: "mg" }],
       },
       {
         med: "Zosyn(Pip/Tazo)",
-        routes: [{ route: "IV", low: 75, units: "mg" }],
+        routes: [{ route: "IV", low: 75, max: 3375, units: "mg" }],
       },
       {
         med: "Metronidazole (Q6)",
-        routes: [{ route: "IV", low: 10, units: "mg" }],
+        routes: [{ route: "IV", low: 10, max: 500, units: "mg" }],
       },
     ],
   },
@@ -271,9 +291,12 @@ const CATEGORIES = [
     meds: [
       {
         med: "Dexamethasone",
-        routes: [{ route: "IV", low: 0.1, units: "mg" }],
+        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
       },
-      { med: "Ondansetron", routes: [{ route: "IV", low: 0.1, units: "mg" }] },
+      {
+        med: "Ondansetron",
+        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
+      },
       {
         med: "Metoclopramide",
         routes: [{ route: "IV/PO", low: 0.15, units: "mg" }],
@@ -294,20 +317,26 @@ const CATEGORIES = [
       {
         med: "Adenosine",
         routes: [
-          { route: "IV (1st dose)", low: 0.1, units: "mg" },
-          { route: "IV (2nd dose)", low: 0.2, units: "mg" },
+          { route: "IV (1st dose)", low: 0.1, max: 6, units: "mg" },
+          { route: "IV (2nd dose)", low: 0.2, max: 12, units: "mg" },
         ],
       },
-      { med: "Amiodarone", routes: [{ route: "IV", low: 5, units: "mg" }] },
+      {
+        med: "Amiodarone",
+        routes: [{ route: "IV", low: 5, max: 300, units: "mg" }],
+      },
       {
         med: "Calcium Chloride",
-        routes: [{ route: "IV", low: 10, high: 20, units: "mg" }],
+        routes: [{ route: "IV", low: 10, high: 20, max: 1000, units: "mg" }],
       },
       {
         med: "Calcium Gluconate",
-        routes: [{ route: "IV", low: 30, high: 60, units: "mg" }],
+        routes: [{ route: "IV", low: 30, high: 60, max: 1000, units: "mg" }],
       },
-      { med: "Dantrolene", routes: [{ route: "IV", low: 2.5, units: "mg" }] },
+      {
+        med: "Dantrolene",
+        routes: [{ route: "IV", low: 2.5, max: 10, units: "mg" }],
+      },
       {
         med: "Intralipid 20%",
         routes: [{ route: "IV", low: 1.5, high: 3, units: "mL" }],
@@ -315,7 +344,7 @@ const CATEGORIES = [
       { med: "Glucose", routes: [{ route: "IV", low: 0.5, units: "g" }] },
       {
         med: "Magnesium",
-        routes: [{ route: "IV", low: 20, high: 50, units: "mg" }],
+        routes: [{ route: "IV", low: 20, high: 50, max: 2000, units: "mg" }],
       },
       {
         med: "Sodium Bicarb",
