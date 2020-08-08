@@ -49,8 +49,11 @@ export default function App() {
   const [dosagesVisible, setDosagesVisible] = useState(false);
   const [bottom, setBottom] = useState(null);
   const bottomObserver = useRef(null);
-  const medsOutputRef = useRef(null);
-  const scrollToMedsOutput = () => scrollToRef(medsOutputRef);
+  const dosagesRef = useRef(null);
+  const handleClickShowDosages = () => {
+    setDosagesVisible(true);
+    scrollToRef(dosagesRef);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -136,11 +139,11 @@ export default function App() {
         </div>
         <Divider className={classes.divider} />
         <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
-        <Divider className={classes.divider} />
+        <Divider className={classes.divider} ref={dosagesRef} />
         <div ref={setBottom}>
           <Typography className={classes.divider}>
             DISCLAIMER: All content on this site is for informational purposes
-            only. It remains the clinician's responsibility to consider
+            only. It remains the clinician's responsibility to consider the
             appropriateness of interventions in the context of each patient's
             clinical circumstances. The creators of this website make no
             representations as to the accuracy or completeness of any
@@ -159,12 +162,11 @@ export default function App() {
             medIdSet={medIdSet}
             age={years}
             weight={weight}
-            ref={medsOutputRef}
           />
         </div>
       </Container>
       {!dosagesVisible && medIdSet.size > 0 ? (
-        <div className={classes.sticky} onClick={scrollToMedsOutput}>
+        <div className={classes.sticky} onClick={handleClickShowDosages}>
           Show Dosages!
         </div>
       ) : null}
