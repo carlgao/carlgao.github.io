@@ -7,52 +7,106 @@ const roundToNearestHalf = (num) => {
   return Math.round(num * 2) / 2;
 };
 
-const genUncuffedEttSize = (age) => {
-  if (age === 0) {
-    return "-";
-  }
-  if (age <= 1 / 12) {
-    // return "Newborn = 3-3.5mm";
-    return "3-3.5mm";
-  }
-  if (age <= 6 / 12) {
-    // return "< 6 months = 3.5mm";
-    return "3.5mm";
-  }
-  if (age <= 1) {
-    // return "6 months to 1 year = 4mm";
-    return "4mm";
-  }
-  const uncuffedSize = roundToNearestHalf(age / 4 + 4);
-  if (uncuffedSize < 6) {
-    // return "4 + age (yrs)/4 = " + uncuffedSize + "mm";
-    return uncuffedSize + "mm";
-  }
-  return "N/A (too old)";
-};
-
 const genCuffedEttSize = (age) => {
   if (age === 0) {
     return "-";
   }
-  return age > 1
-    ? roundToNearestHalf(age / 4 + 3.5).toString() + "mm"
-    : "N/A (≤1 yr old)";
+  if (age < 6 / 12) {
+    return "Use uncuffed ETT (Newborn)";
+  }
+  if (age < 1) {
+    return "3.0-3.5mm (6mo-1y)";
+  }
+  if (age < 2) {
+    return "3.5mm (1-2y)";
+  }
+  if (age < 7) {
+    return roundToNearestHalf(age / 4 + 3.5).toString() + "mm";
+  }
+  if (age <= 9) {
+    return "5.0-5.5mm";
+  }
+  if (age < 10) {
+    return "5.5-6.0mm";
+  }
+  if (age <= 12) {
+    return "6.0-6.5mm";
+  }
+  if (age < 13) {
+    return "6.5mm";
+  }
+  if (age <= 15) {
+    return "6.5-7.0mm";
+  }
+  if (age < 16) {
+    return "7.0mm";
+  }
+  return "7.0-8.0mm";
 };
 
-const genEttLipToMidTrachea = (age) => {
+const genUncuffedEttSize = (age) => {
   if (age === 0) {
     return "-";
   }
+  if (age < 6 / 12) {
+    return "2.5-3.0mm (newborn-6mo)";
+  }
   if (age < 1) {
-    return "N/A (<1 yr old)";
+    return "3.5-4.0mm (6mo-1y)";
   }
-  const num = roundToNearestHalf(age / 2 + 12);
-  if (num >= 21) {
-    return "N/A (too old)";
+  if (age < 2) {
+    return "4.0mm (1-2y)";
   }
-  // return "Age/2+12 = " + num;
-  return num.toString();
+  if (age < 7) {
+    return roundToNearestHalf(age / 4 + 4).toString() + "mm";
+  }
+  if (age <= 9) {
+    return "5.5-6.0mm";
+  }
+  return "N/A (>9y)";
+};
+
+const genEttDepth = (age) => {
+  if (age === 0) {
+    return "-";
+  }
+  if (age < 6 / 12) {
+    return "7-10cm";
+  }
+  if (age < 1) {
+    return "10-11cm";
+  }
+  if (age < 2) {
+    return "12cm";
+  }
+  if (age < 4) {
+    return roundToNearestHalf(age / 2 + 12).toString() + "cm";
+  }
+  if (age <= 6) {
+    return "15-16cm";
+  }
+  if (age < 7) {
+    return "16cm";
+  }
+  if (age <= 9) {
+    return "16-18cm";
+  }
+  if (age < 10) {
+    return "18cm";
+  }
+  if (age <= 12) {
+    return "18-19cm";
+  }
+  if (age < 13) {
+    return "19cm";
+  }
+  if (age <= 15) {
+    return "19-20cm";
+  }
+  if (age < 16) {
+    return "20-21cm";
+  }
+  return "21-24cm";
 };
 
 const genFaceMaskSize = (age) => {
@@ -82,16 +136,21 @@ const genOralAirwaySize = (age, premature) => {
     if (premature) {
       return "30 mm, Clear";
     }
-    return "40 mm, Pink";
   }
   if (age <= 6 / 12) {
+    return "40 mm, Pink";
+  }
+  if (age <= 1) {
     return "50mm, Light Blue";
   }
-  if (age <= 2) {
+  if (age <= 4) {
     return "60mm, Black";
   }
-  if (age <= 5) {
-    return "70mm, White";
+  if (age <= 6) {
+    return "60-70mm, Black or White";
+  }
+  if (age <= 8) {
+    return "70-80mm, White or Green";
   }
   return "80mm, Green";
 };
@@ -109,7 +168,7 @@ const genEbv = (age, weight, premature) => {
   if (age < 1) {
     return (80 * weight).toString() + "mL";
   }
-  if (age < 6) {
+  if (age <= 6) {
     return (75 * weight).toString() + "mL";
   }
   return (70 * weight).toString() + "mL";
@@ -140,20 +199,26 @@ const genLmaSize = (age) => {
   return "4";
 };
 
-const genBladeSize = (age, premature) => {
+const genBladeSize = (age) => {
   if (age === 0) {
     return "-";
   }
-  if (age <= 1 / 12 && premature) {
-    return "00";
+  if (age < 6 / 12) {
+    return "Miller 0";
   }
-  if (age <= 3 / 12) {
-    return "0";
+  if (age < 1) {
+    return "Miller 1";
   }
-  if (age <= 18 / 12) {
-    return "1";
+  if (age < 2) {
+    return "Miller 1 or Wis-hip 1-1.5";
   }
-  return "2";
+  if (age <= 3) {
+    return "Miller 1-2 or Wis-hip 1.5";
+  }
+  if (age <= 9) {
+    return "Miller/Mac 2";
+  }
+  return "Miller 2 or Mac 3";
 };
 
 const genMaintenanceIvf = (weight) => {
@@ -164,9 +229,9 @@ const genMaintenanceIvf = (weight) => {
     return (4 * weight).toString() + "mL";
   }
   if (weight <= 20) {
-    return (40 + 2 * (weight - 10)).toString() + "mL";
+    return (20 + 2 * weight).toString() + "mL";
   }
-  return (60 + 1 * (weight - 20)).toString() + "mL";
+  return (40 + weight).toString() + "mL";
 };
 
 const genSbp = (age, premature) => {
@@ -286,11 +351,11 @@ export default function NonMedOutput({ age, weight, premature }) {
         rows={[
           ["ETT Size Cuffed", genCuffedEttSize(age)],
           ["ETT Size Uncuffed", genUncuffedEttSize(age)],
-          ["ETT @ lip to mid trachea", genEttLipToMidTrachea(age)],
+          ["ETT Depth", genEttDepth(age)],
           ["Face Mask Size", genFaceMaskSize(age)],
           ["Oral Airway Size", genOralAirwaySize(age, premature)],
           ["LMA Size", genLmaSize(age)],
-          ["Blade Size (Miller)", genBladeSize(age, premature)],
+          ["Blade Size", genBladeSize(age)],
         ]}
       />
       <StripedTable

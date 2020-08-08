@@ -12,7 +12,7 @@ export default function WeightInput({ weight, onChange }) {
         value={weight}
         onChange={onChange}
         min={0}
-        max={50}
+        max={200}
         step={0.1}
         units="kg"
       />

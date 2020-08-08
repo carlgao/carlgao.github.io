@@ -32,28 +32,30 @@ const CATEGORIES = [
         routes: [
           {
             route: "IV/PO",
-            low: 1,
+            low: 0.5,
             high: 2,
             units: "mg",
           },
-        ],
-      },
-      {
-        med: "Concent. Ketamine",
-        routes: [
           {
-            route: "IV",
+            route: "IM",
             low: 3,
             high: 7,
             units: "mg",
-            notes:
-              "consider including Glyco 10-15 mcg/kg up to 0.2mg and Versed IM dose in same syringe",
+            notes: "Use concentrated Ketamine",
           },
         ],
       },
       {
         med: "Dexmedetomidine",
-        routes: [{ route: "IV", low: 0.3, high: 2, units: "mg" }],
+        routes: [
+          {
+            route: "IV",
+            low: 0.3,
+            high: 2,
+            units: "mg",
+            notes: "Over 10 minutes",
+          },
+        ],
       },
     ],
   },
@@ -95,16 +97,12 @@ const CATEGORIES = [
                 )}-${roundToHundredth(age < 1 ? 3 * weight : 2 * weight)} mg`;
               },
             },
-            notes:
-              "Atropine and Succinylcholine should be readily accessible on your cart in syringes equipped with 22-25G needles",
           },
           {
             route: "IM",
             low: 4,
             high: 5,
             units: "mg",
-            notes:
-              "Atropine and Succinylcholine should be readily accessible on your cart in syringes equipped with 22-25G needles",
           },
         ],
       },
@@ -114,9 +112,23 @@ const CATEGORIES = [
       },
       {
         med: "Rocuronium",
-        routes: [{ route: "IV", low: 0.6, high: 1.2, units: "mg" }],
+        routes: [
+          {
+            route: "IV",
+            low: 0.6,
+            units: "mg",
+          },
+          {
+            route: "IV (RSI)",
+            low: 1.2,
+            units: "mg",
+          },
+        ],
       },
-      { med: "Vecuronium", routes: [{ route: "IV", low: 0.1, units: "mg" }] },
+      {
+        med: "Vecuronium",
+        routes: [{ route: "IV", low: 0.1, units: "mg" }],
+      },
     ],
   },
   {
@@ -124,7 +136,7 @@ const CATEGORIES = [
     meds: [
       {
         med: "Glycopyrrolate",
-        routes: [{ route: "IV", low: 0.01, high: 0.015, units: "mg" }],
+        routes: [{ route: "IV", low: 0.007, high: 0.015, units: "mg" }],
       },
       {
         med: "Neostigmine",
@@ -163,21 +175,21 @@ const CATEGORIES = [
       {
         med: "Fentanyl",
         routes: [
-          { route: "IV", low: 0.5, high: 1, units: "mg" },
-          { route: "Nasal", low: 2, units: "mg" },
-          { route: "Post-op", low: 0.5, units: "mg" },
+          { route: "IV", low: 0.5, high: 1, units: "mcg" },
+          { route: "Nasal", low: 2, units: "mcg" },
         ],
       },
       {
         med: "Morphine",
-        routes: [
-          { route: "IV", low: 0.05, high: 0.1, units: "mg" },
-          { route: "Morphine", low: 0.05, units: "mg" },
-        ],
+        routes: [{ route: "IV", low: 0.05, high: 0.1, units: "mg" }],
       },
       {
         med: "Toradol",
         routes: [{ route: "IV", low: 0.5, max: 30, units: "mg" }],
+      },
+      {
+        med: "Ketamine",
+        routes: [{ route: "IV", low: 0.25, high: 1, units: "mg" }],
       },
       {
         med: "Tylenol",
@@ -187,12 +199,12 @@ const CATEGORIES = [
             low: 10,
             high: 15,
             units: "mg",
-            notes: "Max 3000 mg/day",
+            notes: "Max 75 mg/kg/day up to 3g/day",
           },
           {
             route: "IV (Q6)",
             customFormula: {
-              str: "<1m: 7.5 mg/kg, 1m-2y: 10 mg/kg, >2y: 15 mg/kg",
+              str: "<1mo: 7.5 mg/kg, 1mo-2y: 10 mg/kg, >2y: 15 mg/kg",
               func: (age, weight) =>
                 `${
                   age < 1 / 12
@@ -202,7 +214,7 @@ const CATEGORIES = [
                     : 15 * weight
                 } mg`,
             },
-            notes: "Max 3000 mg/day",
+            notes: "Max 75 mg/kg/day up to 3g/day",
           },
         ],
       },
@@ -212,7 +224,7 @@ const CATEGORIES = [
     cat: "Infusions",
     meds: [
       {
-        med: "Propofol (infusion)",
+        med: "Propofol",
         routes: [{ route: "IV", low: 75, high: 300, units: "mcg/min" }],
       },
       {
@@ -258,17 +270,57 @@ const CATEGORIES = [
     meds: [
       {
         med: "Cryoprecipitate",
-        routes: [{ route: "", low: 1, high: 2, units: "Units" }],
+        routes: [
+          {
+            route: "",
+            low: 1,
+            high: 2,
+            units: "Units",
+            notes: "Rise Hct 6-9/Hgb 2-3",
+          },
+        ],
       },
-      { med: "FFP", routes: [{ route: "", low: 10, high: 15, units: "mL" }] },
+      {
+        med: "FFP",
+        routes: [
+          {
+            route: "",
+            low: 10,
+            high: 15,
+            units: "mL",
+            notes: "Rise Factors 15-20%",
+          },
+        ],
+      },
       {
         med: "Platelets",
-        routes: [{ route: "", low: 5, high: 10, units: "mL" }],
+        routes: [
+          { route: "", low: 5, high: 10, units: "mL", notes: "Rise 50-100K" },
+        ],
       },
-      { med: "pRBC", routes: [{ route: "", low: 10, high: 15, units: "mL" }] },
+      {
+        med: "pRBC",
+        routes: [
+          {
+            route: "",
+            low: 10,
+            high: 15,
+            units: "mL",
+            notes: "Rise Fibrinogen 60-100 mg/dL",
+          },
+        ],
+      },
       {
         med: "DDAVP",
-        routes: [{ route: "", low: 0.1, high: 0.3, units: "mcg" }],
+        routes: [
+          {
+            route: "",
+            low: 0.1,
+            high: 0.3,
+            units: "mcg",
+            notes: "(30 min prior to proc)",
+          },
+        ],
       },
     ],
   },
@@ -305,12 +357,14 @@ const CATEGORIES = [
       },
       {
         med: "Gentamicin (Q8)",
-        routes: [{ route: "IV", low: 2, units: "mg", notes: "Slow IVP" }],
+        routes: [
+          { route: "IV", low: 2, units: "mg", notes: "Over 60 minutes" },
+        ],
       },
       {
         med: "Vancomycin (Q12)",
         routes: [
-          { route: "IV", low: 15, max: 1500, units: "mg", notes: "60 minutes" },
+          { route: "IV", low: 15, max: 1500, units: "mg", notes: "Slow IVP" },
         ],
       },
       {
@@ -336,7 +390,7 @@ const CATEGORIES = [
       },
       {
         med: "Metoclopramide",
-        routes: [{ route: "IV/PO", low: 0.15, units: "mg" }],
+        routes: [{ route: "IV/PO", low: 0.15, max: 10, units: "mg" }],
       },
     ],
   },
@@ -414,8 +468,15 @@ const CATEGORIES = [
       },
       { med: "Caffeine", routes: [{ route: "IV", low: 10, units: "mg" }] },
       {
-        med: "Naloxone (end case sleepy)",
-        routes: [{ route: "IV", low: 0.8, units: "mcg" }],
+        med: "Lidocaine",
+        routes: [
+          {
+            route: "IV",
+            low: 1,
+            units: "mg",
+            notes: "Follow with 20-50 mcg/kg/min",
+          },
+        ],
       },
       {
         med: "Naloxone (opioid intoxication)",
@@ -430,6 +491,10 @@ const CATEGORIES = [
       {
         med: "Epinephrine",
         routes: [{ route: "IV q3-5min", low: 1, units: "mcg" }],
+      },
+      {
+        med: "Fluid bolus",
+        routes: [{ route: "IV", low: 20, units: "mL" }],
       },
       {
         med: "Diphenhydramine",
