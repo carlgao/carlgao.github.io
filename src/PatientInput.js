@@ -8,11 +8,6 @@ import AgeInput from "./AgeInput.js";
 import WeightInput from "./WeightInput.js";
 
 const useStyles = makeStyles({
-  root: {
-    backgroundColor: "beige",
-    display: "inline-block",
-    padding: 16,
-  },
   prematureInput: {
     backgroundColor: "white",
     borderRadius: 12,
@@ -33,7 +28,7 @@ export default function PatientInput({
 }) {
   const classes = useStyles();
   return (
-    <CustomCard className={classes.root}>
+    <CustomCard variant="beige" pad>
       <AgeInput
         years={years}
         onYearsChange={onYearsChange}

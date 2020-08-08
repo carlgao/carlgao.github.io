@@ -1,20 +1,26 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Checkbox from "@material-ui/core/Checkbox";
+import CustomCard from "./CustomCard";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormLabel from "@material-ui/core/FormLabel";
-import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
+// const useStyles = makeStyles({
+//   card: {
+//     padding: 12,
+//   },
+// });
+
 export default function MedsInput({ categories, onChange }) {
+  // const classes = useStyles();
   return (
-    <Grid container>
-      <Grid item xs={12}>
-        <Typography gutterBottom>Show dosages for:</Typography>
-      </Grid>
+    <>
+      <Typography gutterBottom>Show dosages for:</Typography>
       {categories.map(({ cat, meds }, i) => (
-        <Grid item key={i}>
+        <CustomCard pad>
           <FormLabel>{cat}</FormLabel>
           <FormGroup>
             {meds.map(({ med }, j) => (
@@ -30,8 +36,8 @@ export default function MedsInput({ categories, onChange }) {
               />
             ))}
           </FormGroup>
-        </Grid>
+        </CustomCard>
       ))}
-    </Grid>
+    </>
   );
 }

@@ -10,12 +10,30 @@ const useStyles = makeStyles({
     marginBottom: 24,
     verticalAlign: "top",
   },
+  padded: {
+    padding: 16,
+  },
+  beige: {
+    backgroundColor: "beige",
+  },
 });
 
-export default function CustomCard({ className, ...props }) {
+export default function CustomCard({
+  className = "",
+  pad = false,
+  variant,
+  ...props
+}) {
   const classes = useStyles();
+  let classNameStr = className + " " + classes.root;
+  if (variant !== undefined) {
+    classNameStr += " " + classes[variant];
+  }
+  if (pad) {
+    classNameStr += " " + classes.padded;
+  }
   return (
-    <Card className={className + " " + classes.root} {...props}>
+    <Card className={classNameStr} {...props}>
       {props.children}
     </Card>
   );
