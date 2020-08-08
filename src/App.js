@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // Resources
 import { CATEGORIES, id } from "./data.js";
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,6 +23,20 @@ const prematureDefault = DEBUG ? true : false;
 const useStyles = makeStyles({
   divider: {
     marginBottom: 20,
+  },
+  stickyHeader: {
+    backgroundColor: "lightgreen",
+    bottom: 0,
+    height: 60,
+    left: 0,
+    margin: "0 auto",
+    padding: 12,
+    position: "fixed",
+    right: 0,
+    textAlign: "center",
+    verticalAlign: "middle",
+    width: 240,
+    zIndex: 1,
   },
   title: {
     paddingBottom: 12,
@@ -68,33 +82,36 @@ export default function App() {
   const classes = useStyles();
 
   return (
-    <Container maxWidth={false}>
-      <Typography className={classes.title} variant="h6">
-        Pediatric Anesthesiology Helper
-      </Typography>
-      <div>
-        <PatientInput
-          years={years}
-          onYearsChange={handleYearsChange}
-          months={months}
-          onMonthsChange={handleMonthsChange}
+    <>
+      <Container maxWidth={false} onScroll={(e) => console.log(e, "scroll")}>
+        <Typography className={classes.title} variant="h6">
+          Pediatric Anesthesiology Helper
+        </Typography>
+        <div>
+          <PatientInput
+            years={years}
+            onYearsChange={handleYearsChange}
+            months={months}
+            onMonthsChange={handleMonthsChange}
+            weight={weight}
+            onWeightChange={setWeight}
+            premature={premature}
+            onPrematureChange={setPremature}
+          />
+          <NonMedOutput age={years} weight={weight} premature={premature} />
+        </div>
+        <Divider className={classes.divider} />
+        <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
+        <Divider className={classes.divider} />
+        <MedsOutput
+          catCounts={catCounts}
+          categories={CATEGORIES}
+          medIdSet={medIdSet}
+          age={years}
           weight={weight}
-          onWeightChange={setWeight}
-          premature={premature}
-          onPrematureChange={setPremature}
         />
-        <NonMedOutput age={years} weight={weight} premature={premature} />
-      </div>
-      <Divider className={classes.divider} />
-      <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
-      <Divider className={classes.divider} />
-      <MedsOutput
-        catCounts={catCounts}
-        categories={CATEGORIES}
-        medIdSet={medIdSet}
-        age={years}
-        weight={weight}
-      />
-    </Container>
+      </Container>
+      <div className={classes.stickyHeader}>Show Dosages!</div>
+    </>
   );
 }

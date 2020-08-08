@@ -40,7 +40,7 @@ export default function MedsInput({ categories, onChange }) {
     <div>
       <Typography gutterBottom>Show dosages for:</Typography>
       {categories.map(({ cat, initOpen, meds }, i) => (
-        <CustomCard>
+        <CustomCard key={i}>
           <Accordion
             defaultExpanded={initOpen === true}
             className={classes.accordion}
