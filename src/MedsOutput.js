@@ -1,6 +1,7 @@
 import React from "react";
 // Resources
 import { id, roundToHundredth } from "./data.js";
+import { makeStyles } from "@material-ui/core/styles";
 // Components
 import StripedTable from "./StripedTable";
 
@@ -31,7 +32,7 @@ const genDefaultDosage = (weight, low, high, max, units) => {
   return `${lowDose}-${highDose} ${units}`;
 };
 
-const genRows = (i, meds, medIdSet, age, weight) => {
+const genRows = (classes, i, meds, medIdSet, age, weight) => {
   let rows = [];
   meds.map(({ med, routes }, j) =>
     medIdSet.has(id(i, j))
@@ -60,9 +61,7 @@ const genRows = (i, meds, medIdSet, age, weight) => {
               med,
               route,
               formula,
-              <div style={{ textAlign: "right", fontWeight: "bold" }}>
-                {dosage}
-              </div>,
+              <div className={classes.dosage}>{dosage}</div>,
               notes,
             ]);
           }
@@ -72,6 +71,13 @@ const genRows = (i, meds, medIdSet, age, weight) => {
   return rows;
 };
 
+const useStyles = makeStyles({
+  dosage: {
+    textAlign: "right",
+    fontWeight: "bold",
+  },
+});
+
 export default function MedsOutput({
   catCounts,
   categories,
@@ -79,6 +85,7 @@ export default function MedsOutput({
   age,
   weight,
 }) {
+  const classes = useStyles();
   return (
     <>
       {categories.map(({ cat, meds }, i) =>
@@ -86,7 +93,7 @@ export default function MedsOutput({
           <StripedTable
             key={i}
             title={cat}
-            rows={genRows(i, meds, medIdSet, age, weight)}
+            rows={genRows(classes, i, meds, medIdSet, age, weight)}
           />
         ) : null
       )}

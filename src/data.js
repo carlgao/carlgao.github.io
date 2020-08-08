@@ -39,7 +39,7 @@ const CATEGORIES = [
         ],
       },
       {
-        med: "Concent. Ketamine**",
+        med: "Concent. Ketamine",
         routes: [
           {
             route: "IV",
@@ -95,12 +95,16 @@ const CATEGORIES = [
                 )}-${roundToHundredth(age < 1 ? 3 * weight : 2 * weight)} mg`;
               },
             },
+            notes:
+              "Atropine and Succinylcholine should be readily accessible on your cart in syringes equipped with 22-25G needles",
           },
           {
             route: "IM",
             low: 4,
             high: 5,
             units: "mg",
+            notes:
+              "Atropine and Succinylcholine should be readily accessible on your cart in syringes equipped with 22-25G needles",
           },
         ],
       },
@@ -171,12 +175,35 @@ const CATEGORIES = [
           { route: "Morphine", low: 0.05, units: "mg" },
         ],
       },
-      { med: "Toradol", routes: [{ route: "IV", low: 0.5, units: "mg" }] },
+      {
+        med: "Toradol",
+        routes: [{ route: "IV", low: 0.5, max: 30, units: "mg" }],
+      },
       {
         med: "Tylenol",
         routes: [
-          { route: "PO/PR", low: 10, high: 15, units: "mg" },
-          { route: "IV (Q6)", customFormula: {} },
+          {
+            route: "PO/PR",
+            low: 10,
+            high: 15,
+            units: "mg",
+            notes: "Max 3000 mg/day",
+          },
+          {
+            route: "IV (Q6)",
+            customFormula: {
+              str: "<1m: 7.5 mg/kg, 1m-2y: 10 mg/kg, >2y: 15 mg/kg",
+              func: (age, weight) =>
+                `${
+                  age < 1 / 12
+                    ? 7.5 * weight
+                    : age <= 2
+                    ? 10 * weight
+                    : 15 * weight
+                } mg`,
+            },
+            notes: "Max 3000 mg/day",
+          },
         ],
       },
     ],
@@ -250,31 +277,41 @@ const CATEGORIES = [
     meds: [
       {
         med: "Ampicillin (Q4)",
-        routes: [{ route: "IV", low: 50, max: 3000, units: "mg" }],
+        routes: [
+          { route: "IV", low: 50, max: 3000, units: "mg", notes: "IVP" },
+        ],
       },
       {
         med: "Cefazolin (Q4)",
-        routes: [{ route: "IV", low: 30, max: 2000, units: "mg" }],
+        routes: [
+          { route: "IV", low: 30, max: 2000, units: "mg", notes: "IVP" },
+        ],
       },
       {
         med: "Cefotaxime (Q3)",
-        routes: [{ route: "IV", low: 50, max: 1000, units: "mg" }],
+        routes: [
+          { route: "IV", low: 50, max: 1000, units: "mg", notes: "IVP" },
+        ],
       },
       {
         med: "Cefoxitin (Q4)",
-        routes: [{ route: "IV", low: 30, units: "mg" }],
+        routes: [{ route: "IV", low: 30, units: "mg", notes: "IVP" }],
       },
       {
         med: "Clindamycin (Q6)",
-        routes: [{ route: "IV", low: 10, max: 900, units: "mg" }],
+        routes: [
+          { route: "IV", low: 10, max: 900, units: "mg", notes: "Slow IVP" },
+        ],
       },
       {
         med: "Gentamicin (Q8)",
-        routes: [{ route: "IV", low: 2, units: "mg" }],
+        routes: [{ route: "IV", low: 2, units: "mg", notes: "Slow IVP" }],
       },
       {
         med: "Vancomycin (Q12)",
-        routes: [{ route: "IV", low: 15, max: 1500, units: "mg" }],
+        routes: [
+          { route: "IV", low: 15, max: 1500, units: "mg", notes: "60 minutes" },
+        ],
       },
       {
         med: "Zosyn(Pip/Tazo)",
@@ -313,7 +350,32 @@ const CATEGORIES = [
           { route: "IV q3-5min (Cardiac arrest)", low: 10, units: "mcg" },
         ],
       },
-      { med: "Atropine", routes: [{ route: "IV/IM", low: 0.02, units: "mg" }] },
+      {
+        med: "Atropine",
+        routes: [
+          {
+            route: "IV/IM",
+            customFormula: {
+              str: "0.02 mg/kg (<13y: max 1mg, ≥13y: max 2mg)",
+              func: (age, weight) => {
+                const dose = 0.02 * weight;
+                if (dose < 0.1) {
+                  return "0.1 mg (min dose)";
+                }
+                if (age < 13 && dose > 1) {
+                  return "1.0 mg (max dose)";
+                }
+                if (age >= 13 && dose > 2) {
+                  return "2.0 mg (max dose)";
+                }
+                return `${dose} mg`;
+              },
+            },
+            notes:
+              "Atropine and Succinylcholine should be readily accessible on your cart in syringes equipped with 22-25G needles",
+          },
+        ],
+      },
       {
         med: "Adenosine",
         routes: [
