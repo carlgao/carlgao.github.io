@@ -226,12 +226,12 @@ const genMaintenanceIvf = (weight) => {
     return "-";
   }
   if (weight <= 10) {
-    return (4 * weight).toString() + "mL";
+    return (4 * weight).toString() + "mL/hr";
   }
   if (weight <= 20) {
-    return (20 + 2 * weight).toString() + "mL";
+    return (20 + 2 * weight).toString() + "mL/hr";
   }
-  return (40 + weight).toString() + "mL";
+  return (40 + weight).toString() + "mL/hr";
 };
 
 const genSbp = (age, premature) => {

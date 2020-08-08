@@ -26,6 +26,29 @@ const CATEGORIES = [
     initOpen: true,
     meds: [
       {
+        med: "Rocuronium",
+        routes: [
+          {
+            route: "IV",
+            low: 0.6,
+            units: "mg",
+          },
+          {
+            route: "IV (RSI)",
+            low: 1.2,
+            units: "mg",
+          },
+        ],
+      },
+      {
+        med: "Vecuronium",
+        routes: [{ route: "IV", low: 0.1, units: "mg" }],
+      },
+      {
+        med: "Cisatracurium",
+        routes: [{ route: "IV", low: 0.1, high: 0.2, units: "mg" }],
+      },
+      {
         med: "Succinylcholine",
         routes: [
           {
@@ -47,29 +70,6 @@ const CATEGORIES = [
             units: "mg",
           },
         ],
-      },
-      {
-        med: "Cisatracurium",
-        routes: [{ route: "IV", low: 0.1, high: 0.2, units: "mg" }],
-      },
-      {
-        med: "Rocuronium",
-        routes: [
-          {
-            route: "IV",
-            low: 0.6,
-            units: "mg",
-          },
-          {
-            route: "IV (RSI)",
-            low: 1.2,
-            units: "mg",
-          },
-        ],
-      },
-      {
-        med: "Vecuronium",
-        routes: [{ route: "IV", low: 0.1, units: "mg" }],
       },
     ],
   },
@@ -113,6 +113,33 @@ const CATEGORIES = [
     initOpen: true,
     meds: [
       {
+        med: "Tylenol",
+        routes: [
+          {
+            route: "PO/PR",
+            low: 10,
+            high: 15,
+            units: "mg",
+            notes: "Max 40 mg/kg/day up to 3g/day",
+          },
+          {
+            route: "IV (Q6)",
+            customFormula: {
+              str: "<1mo: 7.5 mg/kg, 1mo-2y: 10 mg/kg, >2y: 15 mg/kg",
+              func: (age, weight) =>
+                `${
+                  age < 1 / 12
+                    ? 7.5 * weight
+                    : age <= 2
+                    ? 10 * weight
+                    : 15 * weight
+                } mg`,
+            },
+            notes: "Max 75 mg/kg/day up to 3g/day",
+          },
+        ],
+      },
+      {
         med: "Hydromorphone",
         routes: [{ route: "IV", low: 0.005, high: 0.015, units: "mg" }],
       },
@@ -134,33 +161,6 @@ const CATEGORIES = [
       {
         med: "Ketamine",
         routes: [{ route: "IV", low: 0.25, high: 1, units: "mg" }],
-      },
-      {
-        med: "Tylenol",
-        routes: [
-          {
-            route: "PO/PR",
-            low: 10,
-            high: 15,
-            units: "mg",
-            notes: "Max 75 mg/kg/day up to 3g/day",
-          },
-          {
-            route: "IV (Q6)",
-            customFormula: {
-              str: "<1mo: 7.5 mg/kg, 1mo-2y: 10 mg/kg, >2y: 15 mg/kg",
-              func: (age, weight) =>
-                `${
-                  age < 1 / 12
-                    ? 7.5 * weight
-                    : age <= 2
-                    ? 10 * weight
-                    : 15 * weight
-                } mg`,
-            },
-            notes: "Max 75 mg/kg/day up to 3g/day",
-          },
-        ],
       },
     ],
   },
@@ -203,6 +203,10 @@ const CATEGORIES = [
         ],
       },
       {
+        med: "Metronidazole (Q6)",
+        routes: [{ route: "IV", low: 10, max: 500, units: "mg" }],
+      },
+      {
         med: "Vancomycin (Q12)",
         routes: [
           { route: "IV", low: 15, max: 1500, units: "mg", notes: "Slow IVP" },
@@ -211,10 +215,6 @@ const CATEGORIES = [
       {
         med: "Zosyn(Pip/Tazo)",
         routes: [{ route: "IV", low: 75, max: 3375, units: "mg" }],
-      },
-      {
-        med: "Metronidazole (Q6)",
-        routes: [{ route: "IV", low: 10, max: 500, units: "mg" }],
       },
     ],
   },
@@ -289,7 +289,7 @@ const CATEGORIES = [
             route: "IV",
             low: 0.3,
             high: 2,
-            units: "mg",
+            units: "mcg",
             notes: "Over 10 minutes",
           },
         ],
@@ -352,7 +352,7 @@ const CATEGORIES = [
             low: 1,
             high: 2,
             units: "Units",
-            notes: "Rise Hct 6-9/Hgb 2-3",
+            notes: "Rise Fibrinogen 60-100 mg/dL",
           },
         ],
       },
@@ -382,7 +382,7 @@ const CATEGORIES = [
             low: 10,
             high: 15,
             units: "mL",
-            notes: "Rise Fibrinogen 60-100 mg/dL",
+            notes: "Rise Hct 6-9/Hgb 2-3",
           },
         ],
       },
@@ -403,13 +403,6 @@ const CATEGORIES = [
   {
     cat: "Resuscitation",
     meds: [
-      {
-        med: "Epinephrine",
-        routes: [
-          { route: "IV q3-5min (Hypotension)", low: 1, units: "mcg" },
-          { route: "IV q3-5min (Cardiac arrest)", low: 10, units: "mcg" },
-        ],
-      },
       {
         med: "Atropine",
         routes: [
@@ -447,6 +440,7 @@ const CATEGORIES = [
         med: "Amiodarone",
         routes: [{ route: "IV", low: 5, max: 300, units: "mg" }],
       },
+      { med: "Caffeine", routes: [{ route: "IV", low: 10, units: "mg" }] },
       {
         med: "Calcium Chloride",
         routes: [{ route: "IV", low: 10, high: 20, max: 1000, units: "mg" }],
@@ -460,19 +454,18 @@ const CATEGORIES = [
         routes: [{ route: "IV", low: 2.5, max: 10, units: "mg" }],
       },
       {
+        med: "Epinephrine",
+        routes: [
+          { route: "IV q3-5min (Hypotension)", low: 1, units: "mcg" },
+          { route: "IV q3-5min (Cardiac arrest)", low: 10, units: "mcg" },
+        ],
+      },
+      { med: "Flumazenil ", routes: [{ route: "IV", low: 0.01, units: "mg" }] },
+      { med: "Glucose", routes: [{ route: "IV", low: 0.5, units: "g" }] },
+      {
         med: "Intralipid 20%",
         routes: [{ route: "IV", low: 1.5, high: 3, units: "mL" }],
       },
-      { med: "Glucose", routes: [{ route: "IV", low: 0.5, units: "g" }] },
-      {
-        med: "Magnesium",
-        routes: [{ route: "IV", low: 20, high: 50, max: 2000, units: "mg" }],
-      },
-      {
-        med: "Sodium Bicarb",
-        routes: [{ route: "IV", low: 1, high: 2, units: "mEq" }],
-      },
-      { med: "Caffeine", routes: [{ route: "IV", low: 10, units: "mg" }] },
       {
         med: "Lidocaine",
         routes: [
@@ -485,10 +478,17 @@ const CATEGORIES = [
         ],
       },
       {
+        med: "Magnesium",
+        routes: [{ route: "IV", low: 20, high: 50, max: 2000, units: "mg" }],
+      },
+      {
         med: "Naloxone (opioid intoxication)",
         routes: [{ route: "IV", low: 10, units: "mcg" }],
       },
-      { med: "Flumazenil ", routes: [{ route: "IV", low: 0.01, units: "mg" }] },
+      {
+        med: "Sodium Bicarb",
+        routes: [{ route: "IV", low: 1, high: 2, units: "mEq" }],
+      },
     ],
   },
   {

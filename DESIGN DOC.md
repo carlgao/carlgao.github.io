@@ -34,6 +34,7 @@
 
 # Flourishes
 
+- Animate sticky button; other animations; etc
 - Weight input as lbs
 - Favicon
 - Logo

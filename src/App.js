@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // Resources
 import { CATEGORIES, id } from "./data.js";
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,15 +24,14 @@ const useStyles = makeStyles({
   divider: {
     marginBottom: 20,
   },
-  stickyHeader: {
+  sticky: {
     backgroundColor: "lightgreen",
-    bottom: 0,
+    bottom: 12,
     height: 60,
-    left: 0,
     margin: "0 auto",
     padding: 12,
     position: "fixed",
-    right: 0,
+    right: 12,
     textAlign: "center",
     verticalAlign: "middle",
     width: 240,
@@ -44,7 +43,41 @@ const useStyles = makeStyles({
   },
 });
 
+const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop);
+
 export default function App() {
+  const [dosagesVisible, setDosagesVisible] = useState(false);
+  const [bottom, setBottom] = useState(null);
+  const bottomObserver = useRef(null);
+  const medsOutputRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setDosagesVisible(true);
+        } else {
+          setDosagesVisible(false);
+        }
+      },
+      { threshold: 1, rootMargin: "48px" }
+    );
+    bottomObserver.current = observer;
+  }, []);
+
+  useEffect(() => {
+    const observer = bottomObserver.current;
+    if (bottom) {
+      observer.observe(bottom);
+    }
+    return () => {
+      if (bottom) {
+        observer.unobserve(bottom);
+      }
+    };
+  }, [bottom]);
+
   const [years, setYears] = useState(yearsDefault);
   const [months, setMonths] = useState(monthsDefault);
   const [weight, setWeight] = useState(weightDefault);
@@ -83,7 +116,7 @@ export default function App() {
 
   return (
     <>
-      <Container maxWidth={false} onScroll={(e) => console.log(e, "scroll")}>
+      <Container maxWidth={false}>
         <Typography className={classes.title} variant="h6">
           Pediatric Anesthesiology Helper
         </Typography>
@@ -103,15 +136,40 @@ export default function App() {
         <Divider className={classes.divider} />
         <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
         <Divider className={classes.divider} />
-        <MedsOutput
-          catCounts={catCounts}
-          categories={CATEGORIES}
-          medIdSet={medIdSet}
-          age={years}
-          weight={weight}
-        />
+        <div ref={setBottom}>
+          <Typography className={classes.divider}>
+            DISCLAIMER: All content on this site is for informational purposes
+            only. It remains the clinician's responsibility to consider
+            appropriateness of interventions in the context of each patient's
+            clinical circumstances. The creators of this website make no
+            representations as to the accuracy or completeness of any
+            information on this site. The information on this site is not
+            guaranteed to be accurate or up-to-date. The creators will not be
+            liable for any errors or omissions in this information nor for the
+            availability of this information. The creators will not be liable
+            for any losses, injuries, or damages from the display or use of this
+            information. Any information on this site should NOT be used as a
+            substitute for the advice of an appropriately qualified and licensed
+            physician or other health care provider.
+          </Typography>
+          <MedsOutput
+            catCounts={catCounts}
+            categories={CATEGORIES}
+            medIdSet={medIdSet}
+            age={years}
+            weight={weight}
+            ref={medsOutputRef}
+          />
+        </div>
       </Container>
-      <div className={classes.stickyHeader}>Show Dosages!</div>
+      {!dosagesVisible && medIdSet.size > 0 ? (
+        <div
+          className={classes.sticky}
+          onClick={() => scrollToRef(medsOutputRef)}
+        >
+          Show Dosages!
+        </div>
+      ) : null}
     </>
   );
 }
