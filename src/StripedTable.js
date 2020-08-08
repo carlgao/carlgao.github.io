@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function StripedTable({ title, rows, headColor = "#BBBBBB" }) {
+export default function StripedTable({ title, rows, headColor = "#C7CEEA" }) {
   const classes = useStyles();
   return (
     <CustomCard>

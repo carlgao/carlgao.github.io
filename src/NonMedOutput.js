@@ -102,17 +102,17 @@ const genEbv = (age, weight, premature) => {
   }
   if (age <= 1 / 12) {
     if (premature) {
-      return (100 * weight).toString();
+      return (100 * weight).toString() + "mL";
     }
-    return (90 * weight).toString();
+    return (90 * weight).toString() + "mL";
   }
   if (age < 1) {
-    return (80 * weight).toString();
+    return (80 * weight).toString() + "mL";
   }
   if (age < 6) {
-    return (75 * weight).toString();
+    return (75 * weight).toString() + "mL";
   }
-  return (70 * weight).toString();
+  return (70 * weight).toString() + "mL";
 };
 
 const genLmaSize = (age) => {
@@ -161,12 +161,12 @@ const genMaintenanceIvf = (weight) => {
     return "-";
   }
   if (weight <= 10) {
-    return (4 * weight).toString();
+    return (4 * weight).toString() + "mL";
   }
   if (weight <= 20) {
-    return (40 + 2 * (weight - 10)).toString();
+    return (40 + 2 * (weight - 10)).toString() + "mL";
   }
-  return (60 + 1 * (weight - 20)).toString();
+  return (60 + 1 * (weight - 20)).toString() + "mL";
 };
 
 const genSbp = (age, premature) => {
