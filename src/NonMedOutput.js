@@ -336,7 +336,7 @@ export default function NonMedOutput({ age, weight, premature }) {
           ["ETT Depth", genEttDepth(age)],
           ["Face Mask Size", genFaceMaskSize(age)],
           ["Oral Airway Size", genOralAirwaySize(age, premature)],
-          ["LMA Size", genLmaSize(age)],
+          ["LMA Size", genLmaSize(weight)],
           ["Blade Size", genBladeSize(age)],
         ]}
       />
