@@ -6,19 +6,15 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Checkbox from "@material-ui/core/Checkbox";
 import CustomCard from "./CustomCard";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import Typography from "@material-ui/core/Typography";
 
-// const useStyles = makeStyles({
-//   card: {
-//     padding: 12,
-//   },
-// });
-
 const CustomAccordionSummary = withStyles({
   root: {
-    backgroundColor: "rgba(0, 0, 0, .03)",
+    backgroundColor: "#FFE387",
+    fontWeight: "bold",
     minHeight: 12,
     "&$expanded": {
       minHeight: 12,
@@ -32,15 +28,26 @@ const CustomAccordionSummary = withStyles({
   expanded: {},
 })(AccordionSummary);
 
+const useStyles = makeStyles({
+  accordion: {
+    backgroundColor: "beige",
+  },
+});
+
 export default function MedsInput({ categories, onChange }) {
-  // const classes = useStyles();
+  const classes = useStyles();
   return (
     <div>
       <Typography gutterBottom>Show dosages for:</Typography>
-      {categories.map(({ cat, meds }, i) => (
+      {categories.map(({ cat, initOpen, meds }, i) => (
         <CustomCard>
-          <Accordion style={{ border: 0 }}>
-            <CustomAccordionSummary>{cat}</CustomAccordionSummary>
+          <Accordion
+            defaultExpanded={initOpen === true}
+            className={classes.accordion}
+          >
+            <CustomAccordionSummary expandIcon={<ExpandMoreIcon />}>
+              {cat}
+            </CustomAccordionSummary>
             <AccordionDetails>
               <FormGroup>
                 {meds.map(({ med }, j) => (

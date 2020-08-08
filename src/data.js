@@ -1,5 +1,242 @@
 const CATEGORIES = [
   {
+    cat: "Induction",
+    initOpen: true,
+    meds: [
+      {
+        med: "Propofol",
+        routes: [
+          {
+            route: "IV",
+            low: 2,
+            high: 3,
+            units: "mg",
+          },
+        ],
+      },
+      { med: "Etomidate", routes: [{ route: "IV", low: 0.3, units: "mg" }] },
+      {
+        med: "Ketamine",
+        routes: [{ route: "IV", low: 2, high: 3, units: "mg" }],
+      },
+    ],
+  },
+  {
+    cat: "Muscle Relaxants",
+    initOpen: true,
+    meds: [
+      {
+        med: "Succinylcholine",
+        routes: [
+          {
+            route: "IV",
+            customFormula: {
+              str: "<1y: 2-3 mg/kg, >1y: 1-2 mg/kg",
+              func: (age, weight) => {
+                if (age === 0 || weight === 0) return "";
+                return `${roundToHundredth(
+                  age < 1 ? 2 * weight : weight
+                )}-${roundToHundredth(age < 1 ? 3 * weight : 2 * weight)} mg`;
+              },
+            },
+          },
+          {
+            route: "IM",
+            low: 4,
+            high: 5,
+            units: "mg",
+          },
+        ],
+      },
+      {
+        med: "Cisatracurium",
+        routes: [{ route: "IV", low: 0.1, high: 0.2, units: "mg" }],
+      },
+      {
+        med: "Rocuronium",
+        routes: [
+          {
+            route: "IV",
+            low: 0.6,
+            units: "mg",
+          },
+          {
+            route: "IV (RSI)",
+            low: 1.2,
+            units: "mg",
+          },
+        ],
+      },
+      {
+        med: "Vecuronium",
+        routes: [{ route: "IV", low: 0.1, units: "mg" }],
+      },
+    ],
+  },
+  {
+    cat: "Muscle Relaxant Reversal",
+    initOpen: true,
+    meds: [
+      {
+        med: "Glycopyrrolate",
+        routes: [{ route: "IV", low: 0.007, high: 0.015, units: "mg" }],
+      },
+      {
+        med: "Neostigmine",
+        routes: [{ route: "IV", low: 0.035, high: 0.075, units: "mg" }],
+      },
+      {
+        med: "Sugammadex",
+        routes: [
+          {
+            route: "IV (TOF≥2)",
+            low: 2,
+            units: "mg",
+          },
+          {
+            route: "IV (TOF<2)",
+            low: 4,
+            units: "mg",
+          },
+          {
+            route: "IV (immediate reversal)",
+            low: 16,
+            units: "mg",
+            notes: "if approved by Attng",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    cat: "Pain Medications",
+    initOpen: true,
+    meds: [
+      {
+        med: "Hydromorphone",
+        routes: [{ route: "IV", low: 0.005, high: 0.015, units: "mg" }],
+      },
+      {
+        med: "Fentanyl",
+        routes: [
+          { route: "IV", low: 0.5, high: 1, units: "mcg" },
+          { route: "Nasal", low: 2, units: "mcg" },
+        ],
+      },
+      {
+        med: "Morphine",
+        routes: [{ route: "IV", low: 0.05, high: 0.1, units: "mg" }],
+      },
+      {
+        med: "Toradol",
+        routes: [{ route: "IV", low: 0.5, max: 30, units: "mg" }],
+      },
+      {
+        med: "Ketamine",
+        routes: [{ route: "IV", low: 0.25, high: 1, units: "mg" }],
+      },
+      {
+        med: "Tylenol",
+        routes: [
+          {
+            route: "PO/PR",
+            low: 10,
+            high: 15,
+            units: "mg",
+            notes: "Max 75 mg/kg/day up to 3g/day",
+          },
+          {
+            route: "IV (Q6)",
+            customFormula: {
+              str: "<1mo: 7.5 mg/kg, 1mo-2y: 10 mg/kg, >2y: 15 mg/kg",
+              func: (age, weight) =>
+                `${
+                  age < 1 / 12
+                    ? 7.5 * weight
+                    : age <= 2
+                    ? 10 * weight
+                    : 15 * weight
+                } mg`,
+            },
+            notes: "Max 75 mg/kg/day up to 3g/day",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    cat: "Antibiotics",
+    initOpen: true,
+    meds: [
+      {
+        med: "Ampicillin (Q4)",
+        routes: [
+          { route: "IV", low: 50, max: 3000, units: "mg", notes: "IVP" },
+        ],
+      },
+      {
+        med: "Cefazolin (Q4)",
+        routes: [
+          { route: "IV", low: 30, max: 2000, units: "mg", notes: "IVP" },
+        ],
+      },
+      {
+        med: "Cefotaxime (Q3)",
+        routes: [
+          { route: "IV", low: 50, max: 1000, units: "mg", notes: "IVP" },
+        ],
+      },
+      {
+        med: "Cefoxitin (Q4)",
+        routes: [{ route: "IV", low: 30, units: "mg", notes: "IVP" }],
+      },
+      {
+        med: "Clindamycin (Q6)",
+        routes: [
+          { route: "IV", low: 10, max: 900, units: "mg", notes: "Slow IVP" },
+        ],
+      },
+      {
+        med: "Gentamicin (Q8)",
+        routes: [
+          { route: "IV", low: 2, units: "mg", notes: "Over 60 minutes" },
+        ],
+      },
+      {
+        med: "Vancomycin (Q12)",
+        routes: [
+          { route: "IV", low: 15, max: 1500, units: "mg", notes: "Slow IVP" },
+        ],
+      },
+      {
+        med: "Zosyn(Pip/Tazo)",
+        routes: [{ route: "IV", low: 75, max: 3375, units: "mg" }],
+      },
+      {
+        med: "Metronidazole (Q6)",
+        routes: [{ route: "IV", low: 10, max: 500, units: "mg" }],
+      },
+    ],
+  },
+  {
+    cat: "Antiemetic",
+    initOpen: true,
+    meds: [
+      {
+        med: "Dexamethasone",
+        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
+      },
+      {
+        med: "Ondansetron",
+        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
+      },
+      {
+        med: "Metoclopramide",
+        routes: [{ route: "IV/PO", low: 0.15, max: 10, units: "mg" }],
+      },
+    ],
+  },
+  {
     cat: "Premedication",
     meds: [
       {
@@ -54,167 +291,6 @@ const CATEGORIES = [
             high: 2,
             units: "mg",
             notes: "Over 10 minutes",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    cat: "Induction",
-    meds: [
-      {
-        med: "Propofol",
-        routes: [
-          {
-            route: "IV",
-            low: 2,
-            high: 3,
-            units: "mg",
-          },
-        ],
-      },
-      { med: "Etomidate", routes: [{ route: "IV", low: 0.3, units: "mg" }] },
-      {
-        med: "Ketamine",
-        routes: [{ route: "IV", low: 2, high: 3, units: "mg" }],
-      },
-    ],
-  },
-  {
-    cat: "Muscle Relaxants",
-    meds: [
-      {
-        med: "Succinylcholine",
-        routes: [
-          {
-            route: "IV",
-            customFormula: {
-              str: "<1y: 2-3 mg/kg, >1y: 1-2 mg/kg",
-              func: (age, weight) => {
-                if (age === 0 || weight === 0) return "";
-                return `${roundToHundredth(
-                  age < 1 ? 2 * weight : weight
-                )}-${roundToHundredth(age < 1 ? 3 * weight : 2 * weight)} mg`;
-              },
-            },
-          },
-          {
-            route: "IM",
-            low: 4,
-            high: 5,
-            units: "mg",
-          },
-        ],
-      },
-      {
-        med: "Cisatracurium",
-        routes: [{ route: "IV", low: 0.1, high: 0.2, units: "mg" }],
-      },
-      {
-        med: "Rocuronium",
-        routes: [
-          {
-            route: "IV",
-            low: 0.6,
-            units: "mg",
-          },
-          {
-            route: "IV (RSI)",
-            low: 1.2,
-            units: "mg",
-          },
-        ],
-      },
-      {
-        med: "Vecuronium",
-        routes: [{ route: "IV", low: 0.1, units: "mg" }],
-      },
-    ],
-  },
-  {
-    cat: "Muscle Relaxant Reversal",
-    meds: [
-      {
-        med: "Glycopyrrolate",
-        routes: [{ route: "IV", low: 0.007, high: 0.015, units: "mg" }],
-      },
-      {
-        med: "Neostigmine",
-        routes: [{ route: "IV", low: 0.035, high: 0.075, units: "mg" }],
-      },
-      {
-        med: "Sugammadex",
-        routes: [
-          {
-            route: "IV (TOF≥2)",
-            low: 2,
-            units: "mg",
-          },
-          {
-            route: "IV (TOF<2)",
-            low: 4,
-            units: "mg",
-          },
-          {
-            route: "IV (immediate reversal)",
-            low: 16,
-            units: "mg",
-            notes: "if approved by Attng",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    cat: "Pain Medications",
-    meds: [
-      {
-        med: "Hydromorphone",
-        routes: [{ route: "IV", low: 0.005, high: 0.015, units: "mg" }],
-      },
-      {
-        med: "Fentanyl",
-        routes: [
-          { route: "IV", low: 0.5, high: 1, units: "mcg" },
-          { route: "Nasal", low: 2, units: "mcg" },
-        ],
-      },
-      {
-        med: "Morphine",
-        routes: [{ route: "IV", low: 0.05, high: 0.1, units: "mg" }],
-      },
-      {
-        med: "Toradol",
-        routes: [{ route: "IV", low: 0.5, max: 30, units: "mg" }],
-      },
-      {
-        med: "Ketamine",
-        routes: [{ route: "IV", low: 0.25, high: 1, units: "mg" }],
-      },
-      {
-        med: "Tylenol",
-        routes: [
-          {
-            route: "PO/PR",
-            low: 10,
-            high: 15,
-            units: "mg",
-            notes: "Max 75 mg/kg/day up to 3g/day",
-          },
-          {
-            route: "IV (Q6)",
-            customFormula: {
-              str: "<1mo: 7.5 mg/kg, 1mo-2y: 10 mg/kg, >2y: 15 mg/kg",
-              func: (age, weight) =>
-                `${
-                  age < 1 / 12
-                    ? 7.5 * weight
-                    : age <= 2
-                    ? 10 * weight
-                    : 15 * weight
-                } mg`,
-            },
-            notes: "Max 75 mg/kg/day up to 3g/day",
           },
         ],
       },
@@ -321,76 +397,6 @@ const CATEGORIES = [
             notes: "(30 min prior to proc)",
           },
         ],
-      },
-    ],
-  },
-  {
-    cat: "Antibiotics",
-    meds: [
-      {
-        med: "Ampicillin (Q4)",
-        routes: [
-          { route: "IV", low: 50, max: 3000, units: "mg", notes: "IVP" },
-        ],
-      },
-      {
-        med: "Cefazolin (Q4)",
-        routes: [
-          { route: "IV", low: 30, max: 2000, units: "mg", notes: "IVP" },
-        ],
-      },
-      {
-        med: "Cefotaxime (Q3)",
-        routes: [
-          { route: "IV", low: 50, max: 1000, units: "mg", notes: "IVP" },
-        ],
-      },
-      {
-        med: "Cefoxitin (Q4)",
-        routes: [{ route: "IV", low: 30, units: "mg", notes: "IVP" }],
-      },
-      {
-        med: "Clindamycin (Q6)",
-        routes: [
-          { route: "IV", low: 10, max: 900, units: "mg", notes: "Slow IVP" },
-        ],
-      },
-      {
-        med: "Gentamicin (Q8)",
-        routes: [
-          { route: "IV", low: 2, units: "mg", notes: "Over 60 minutes" },
-        ],
-      },
-      {
-        med: "Vancomycin (Q12)",
-        routes: [
-          { route: "IV", low: 15, max: 1500, units: "mg", notes: "Slow IVP" },
-        ],
-      },
-      {
-        med: "Zosyn(Pip/Tazo)",
-        routes: [{ route: "IV", low: 75, max: 3375, units: "mg" }],
-      },
-      {
-        med: "Metronidazole (Q6)",
-        routes: [{ route: "IV", low: 10, max: 500, units: "mg" }],
-      },
-    ],
-  },
-  {
-    cat: "Antiemetic",
-    meds: [
-      {
-        med: "Dexamethasone",
-        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
-      },
-      {
-        med: "Ondansetron",
-        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
-      },
-      {
-        med: "Metoclopramide",
-        routes: [{ route: "IV/PO", low: 0.15, max: 10, units: "mg" }],
       },
     ],
   },
