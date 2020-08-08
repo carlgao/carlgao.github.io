@@ -9,6 +9,9 @@ const roundToNearestHalf = (num) => {
 };
 
 const genUncuffedEttSize = (age) => {
+  if (age == 0) {
+    return "-";
+  }
   if (age <= 1 / 12) {
     // return "Newborn = 3-3.5mm";
     return "3-3.5mm";
@@ -30,12 +33,18 @@ const genUncuffedEttSize = (age) => {
 };
 
 const genCuffedEttSize = (age) => {
+  if (age == 0) {
+    return "-";
+  }
   return age > 1
     ? roundToNearestHalf(age / 4 + 3.5).toString() + "mm"
     : "N/A (≤1 yr old)";
 };
 
 const genEttLipToMidTrachea = (age) => {
+  if (age == 0) {
+    return "-";
+  }
   if (age < 1) {
     return "N/A (<1 yr old)";
   }
@@ -48,6 +57,9 @@ const genEttLipToMidTrachea = (age) => {
 };
 
 const genFaceMaskSize = (age) => {
+  if (age == 0) {
+    return "-";
+  }
   if (age <= 1 / 12) {
     return "1";
   }
@@ -64,6 +76,9 @@ const genFaceMaskSize = (age) => {
 };
 
 const genOralAirwaySize = (age, premature) => {
+  if (age == 0) {
+    return "-";
+  }
   if (age <= 1 / 12) {
     if (premature) {
       return "30 mm, Clear";
@@ -83,6 +98,9 @@ const genOralAirwaySize = (age, premature) => {
 };
 
 const genEbv = (age, weight, premature) => {
+  if (age == 0 || weight == 0) {
+    return "-";
+  }
   if (age <= 1 / 12) {
     if (premature) {
       return (100 * weight).toString();
@@ -99,6 +117,9 @@ const genEbv = (age, weight, premature) => {
 };
 
 const genLmaSize = (age) => {
+  if (age == 0) {
+    return "-";
+  }
   if (age <= 1 / 12) {
     return "1";
   }
@@ -121,6 +142,9 @@ const genLmaSize = (age) => {
 };
 
 const genBladeSize = (age, premature) => {
+  if (age == 0) {
+    return "-";
+  }
   if (age <= 1 / 12 && premature) {
     return "00";
   }
@@ -134,13 +158,116 @@ const genBladeSize = (age, premature) => {
 };
 
 const genMaintenanceIvf = (weight) => {
+  if (weight == 0) {
+    return "-";
+  }
   if (weight <= 10) {
-    return 4 * weight;
+    return (4 * weight).toString();
   }
   if (weight <= 20) {
-    return 40 + 2 * (weight - 10);
+    return (40 + 2 * (weight - 10)).toString();
   }
-  return 60 + 1 * (weight - 20);
+  return (60 + 1 * (weight - 20)).toString();
+};
+
+const genSbp = (age, premature) => {
+  if (age == 0) {
+    return "-";
+  }
+  if (age <= 1 / 12 && premature) {
+    return "55-75";
+  }
+  if (age <= 4 / 12) {
+    return "65-85";
+  }
+  if (age <= 6 / 12) {
+    return "70-90";
+  }
+  if (age <= 1) {
+    return "80-100";
+  }
+  if (age <= 3) {
+    return "90-105";
+  }
+  if (age <= 6) {
+    return "95-110";
+  }
+  if (age <= 12) {
+    return "100-120";
+  }
+  return "110-135";
+};
+
+const genDbp = (age, premature) => {
+  if (age == 0) {
+    return "-";
+  }
+  if (age <= 1 / 12 && premature) {
+    return "35-45";
+  }
+  if (age <= 3 / 12) {
+    return "45-55";
+  }
+  if (age <= 6 / 12) {
+    return "50-65";
+  }
+  if (age <= 1) {
+    return "55-65";
+  }
+  if (age <= 3) {
+    return "55-70";
+  }
+  return "60-75";
+};
+
+const genHr = (age, premature) => {
+  if (age == 0) {
+    return "-";
+  }
+  if (age <= 1 / 12 && premature) {
+    return "120-170";
+  }
+  if (age <= 3 / 12) {
+    return "100-150";
+  }
+  if (age <= 6 / 12) {
+    return "90-120";
+  }
+  if (age <= 1) {
+    return "80-120";
+  }
+  if (age <= 3) {
+    return "70-110";
+  }
+  if (age <= 6) {
+    return "65-110";
+  }
+  if (age <= 12) {
+    return "60-95";
+  }
+  return "55-85";
+};
+
+const genRr = (age, premature) => {
+  if (age == 0) {
+    return "-";
+  }
+  if (age <= 1 / 12 && premature) {
+    return "50-60";
+  }
+  if (age <= 3 / 12) {
+    return "35-50";
+  }
+  if (age <= 1) {
+    return "25-40";
+  }
+  if (age <= 6) {
+    return "25-30";
+  }
+  if (age <= 12) {
+    return "20-25";
+  }
+  return "14-20";
 };
 
 const useStyles = makeStyles({
@@ -173,6 +300,16 @@ export default function NonMedOutput({ age, weight, premature }) {
         rows={[
           ["EBV", genEbv(age, weight, premature)],
           ["Maintenance IVF", genMaintenanceIvf(weight)],
+        ]}
+      />
+      <StripedTable
+        title="Hemodynamic Parameters"
+        headColor="#E2F0CB"
+        rows={[
+          ["SBP", genSbp(age, premature)],
+          ["DBP", genDbp(age, premature)],
+          ["HR", genHr(age, premature)],
+          ["RR", genRr(age, premature)],
         ]}
       />
     </div>

@@ -73,7 +73,7 @@ const CATEGORIES = [
     meds: [],
   },
   {
-    cat: "Antibiotics *check with surgeon",
+    cat: "Antibiotics",
     meds: [],
   },
   {
