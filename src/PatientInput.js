@@ -1,5 +1,4 @@
 import React from "react";
-import { borders } from "@material-ui/system";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Checkbox from "@material-ui/core/Checkbox";

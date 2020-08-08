@@ -4,7 +4,6 @@ import { CATEGORIES, id } from "./data.js";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
 import MedsInput from "./MedsInput.js";
 import MedsOutput from "./MedsOutput.js";
 import NonMedOutput from "./NonMedOutput.js";

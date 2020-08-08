@@ -42,10 +42,10 @@ export default function StripedTable({ title, rows, headColor = "#BBBBBB" }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => (
-              <StyledTableRow key={i}>
-                {row.map((content, j) => (
-                  <TableCell key={j} style={{ padding: 4 }}>
+            {rows.map((row, j) => (
+              <StyledTableRow key={j}>
+                {row.map((content, k) => (
+                  <TableCell key={k} style={{ padding: 4 }}>
                     {content}
                   </TableCell>
                 ))}

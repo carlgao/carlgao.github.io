@@ -1,6 +1,5 @@
 import React from "react";
 // Resources
-import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { id, roundToHundredth } from "./data.js";
 // Components
 import StripedTable from "./StripedTable";
@@ -36,36 +35,38 @@ const genRows = (i, meds, medIdSet, age, weight) => {
   let rows = [];
   meds.map(({ med, routes }, j) =>
     medIdSet.has(id(i, j))
-      ? routes.map(({ route, low, high, max, units, customFormula, notes }) => {
-          let formula;
-          let dosage;
-          if (customFormula !== undefined) {
-            if (
-              low !== undefined ||
-              high !== undefined ||
-              units !== undefined ||
-              max !== undefined
-            ) {
-              console.log(
-                "Warning: custom formula provided but default keys provided as well"
-              );
+      ? routes.forEach(
+          ({ route, low, high, max, units, customFormula, notes }) => {
+            let formula;
+            let dosage;
+            if (customFormula !== undefined) {
+              if (
+                low !== undefined ||
+                high !== undefined ||
+                units !== undefined ||
+                max !== undefined
+              ) {
+                console.log(
+                  "Warning: custom formula provided but default keys provided as well"
+                );
+              }
+              formula = customFormula.str;
+              dosage = customFormula.func(age, weight);
+            } else {
+              formula = genDefaultFormula(low, high, max, units);
+              dosage = genDefaultDosage(weight, low, high, max, units);
             }
-            formula = customFormula.str;
-            dosage = customFormula.func(age, weight);
-          } else {
-            formula = genDefaultFormula(low, high, max, units);
-            dosage = genDefaultDosage(weight, low, high, max, units);
+            rows.push([
+              med,
+              route,
+              formula,
+              <div style={{ textAlign: "right", fontWeight: "bold" }}>
+                {dosage}
+              </div>,
+              notes,
+            ]);
           }
-          rows.push([
-            med,
-            route,
-            formula,
-            <div style={{ textAlign: "right", fontWeight: "bold" }}>
-              {dosage}
-            </div>,
-            notes,
-          ]);
-        })
+        )
       : null
   );
   return rows;
@@ -83,6 +84,7 @@ export default function MedsOutput({
       {categories.map(({ cat, meds }, i) =>
         catCounts[i] !== undefined && catCounts[i] > 0 ? (
           <StripedTable
+            key={i}
             title={cat}
             rows={genRows(i, meds, medIdSet, age, weight)}
           />

@@ -1,7 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 // Components
-import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import NumInput from "./NumInput";
 
@@ -18,33 +16,6 @@ export default function AgeInput({
   months,
   onMonthsChange,
 }) {
-  //   const classes = useStyles();
-  const handleYearsChange = (event) => {
-    onYearsChange(
-      event.target.value === "" ? null : Number(event.target.value)
-    );
-  };
-  const handleMonthsChange = (event) => {
-    onMonthsChange(
-      event.target.value === "" ? null : Number(event.target.value)
-    );
-  };
-
-  const handleYearsBlur = () => {
-    if (years < MIN) {
-      onYearsChange(MIN);
-    } else if (years > YEARS_MAX) {
-      onYearsChange(YEARS_MAX);
-    }
-  };
-  const handleMonthsBlur = () => {
-    if (months < MIN) {
-      onMonthsChange(MIN);
-    } else if (months > MONTHS_MAX) {
-      onMonthsChange(MONTHS_MAX);
-    }
-  };
-
   return (
     <>
       <Typography gutterBottom>Age</Typography>
