@@ -4,6 +4,7 @@ import { CATEGORIES, id } from "./data.js";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Container from "@material-ui/core/Container";
+import Divider from "@material-ui/core/Divider";
 import MedsInput from "./MedsInput.js";
 import MedsOutput from "./MedsOutput.js";
 import NonMedOutput from "./NonMedOutput.js";
@@ -20,6 +21,9 @@ const catCountsDefault = DEBUG ? { 0: 1, 1: 1 } : {};
 const prematureDefault = DEBUG ? true : false;
 
 const useStyles = makeStyles({
+  divider: {
+    marginBottom: 20,
+  },
   title: {
     paddingBottom: 12,
     paddingTop: 12,
@@ -81,7 +85,9 @@ export default function App() {
         />
         <NonMedOutput age={years} weight={weight} premature={premature} />
       </div>
+      <Divider className={classes.divider} />
       <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
+      <Divider className={classes.divider} />
       <MedsOutput
         catCounts={catCounts}
         categories={CATEGORIES}
