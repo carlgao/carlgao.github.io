@@ -21,9 +21,24 @@ const useStyles = makeStyles({
   headCell: {
     padding: 12,
   },
+  bodyCell: {
+    padding: 4,
+  },
+  pastelCyan: {
+    backgroundColor: "#DCFFFB",
+  },
+  pastelRed: {
+    backgroundColor: "#FFABAB",
+  },
+  pastelPink: {
+    backgroundColor: "#FFDCF4",
+  },
+  pastelBlue: {
+    backgroundColor: "#C7CEEA",
+  },
 });
 
-export default function StripedTable({ title, rows, headColor = "#C7CEEA" }) {
+export default function StripedTable({ title, rows, variant = "pastelBlue" }) {
   const classes = useStyles();
   return (
     <CustomCard>
@@ -34,8 +49,7 @@ export default function StripedTable({ title, rows, headColor = "#C7CEEA" }) {
               <TableCell
                 align="center"
                 colSpan={rows[0].length}
-                className={classes.headCell}
-                style={{ backgroundColor: headColor }}
+                className={`${classes.headCell} ${classes[variant]}`}
               >
                 {title}
               </TableCell>
@@ -45,7 +59,7 @@ export default function StripedTable({ title, rows, headColor = "#C7CEEA" }) {
             {rows.map((row, j) => (
               <StyledTableRow key={j}>
                 {row.map((content, k) => (
-                  <TableCell key={k} style={{ padding: 4 }}>
+                  <TableCell key={k} className={classes.bodyCell}>
                     {content}
                   </TableCell>
                 ))}

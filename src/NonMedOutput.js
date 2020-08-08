@@ -282,7 +282,7 @@ export default function NonMedOutput({ age, weight, premature }) {
     <div className={classes.root}>
       <StripedTable
         title="Airway"
-        headColor="#DCFFFB"
+        variant="pastelCyan"
         rows={[
           ["ETT Size Cuffed", genCuffedEttSize(age)],
           ["ETT Size Uncuffed", genUncuffedEttSize(age)],
@@ -295,7 +295,7 @@ export default function NonMedOutput({ age, weight, premature }) {
       />
       <StripedTable
         title="Hemodynamic Parameters"
-        headColor="#FFABAB"
+        variant="pastelRed"
         rows={[
           ["SBP", genSbp(age, premature)],
           ["DBP", genDbp(age, premature)],
@@ -305,7 +305,7 @@ export default function NonMedOutput({ age, weight, premature }) {
       />
       <StripedTable
         title="Other"
-        headColor="#FFDCF4"
+        variant="pastelPink"
         rows={[
           ["EBV", genEbv(age, weight, premature)],
           ["Maintenance IVF", genMaintenanceIvf(weight)],
