@@ -174,29 +174,11 @@ const genEbv = (age, weight, premature) => {
   return (70 * weight).toString() + "mL";
 };
 
-const genLmaSize = (age) => {
-  if (age === 0) {
+const genLmaSize = (weight) => {
+  if (weight === 0) {
     return "-";
   }
-  if (age <= 1 / 12) {
-    return "1";
-  }
-  if (age <= 6 / 12) {
-    return "1-1.5";
-  }
-  if (age <= 1) {
-    return "1.5";
-  }
-  if (age <= 6) {
-    return "2";
-  }
-  if (age <= 8) {
-    return "2.5";
-  }
-  if (age <= 12) {
-    return "3";
-  }
-  return "4";
+  return roundToNearestHalf(weight / 20 + 1);
 };
 
 const genBladeSize = (age) => {
