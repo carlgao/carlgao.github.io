@@ -171,7 +171,7 @@ export default function App() {
           className={classes.sticky}
           onClick={handleClickShowDosages}
         >
-          Show Dosages!
+          Show Dosages
         </Button>
       ) : null}
     </>
