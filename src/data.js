@@ -404,6 +404,13 @@ const CATEGORIES = [
     cat: "Resuscitation",
     meds: [
       {
+        med: "Epinephrine",
+        routes: [
+          { route: "IV q3-5min (Hypotension)", low: 1, units: "mcg" },
+          { route: "IV q3-5min (Cardiac arrest)", low: 10, units: "mcg" },
+        ],
+      },
+      {
         med: "Atropine",
         routes: [
           {
@@ -452,13 +459,6 @@ const CATEGORIES = [
       {
         med: "Dantrolene",
         routes: [{ route: "IV", low: 2.5, max: 10, units: "mg" }],
-      },
-      {
-        med: "Epinephrine",
-        routes: [
-          { route: "IV q3-5min (Hypotension)", low: 1, units: "mcg" },
-          { route: "IV q3-5min (Cardiac arrest)", low: 10, units: "mcg" },
-        ],
       },
       { med: "Flumazenil ", routes: [{ route: "IV", low: 0.01, units: "mg" }] },
       { med: "Glucose", routes: [{ route: "IV", low: 0.5, units: "g" }] },

@@ -23,14 +23,8 @@
 # Todo
 
 - show "Adult dosing" warning on >50kg?
-- NonMedOutput formulas
-- check max dose, genDefaultDosage overall, custom dosage formulas
-- Show \* and \*\* notes as popover?
 - Alphabetize categories, or meds within categories?
 - make repo private and grab a better domain?
-- open by default:
-  Ya I think induction, muscle relaxants, reversal, pain, antibiotics and antiemetic
-  +/- antibiotics depending what works better for ur formatting
 
 # Flourishes
 
