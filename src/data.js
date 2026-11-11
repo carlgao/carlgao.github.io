@@ -1,7 +1,287 @@
+const SUCCINYLCHOLINE_IV_CONC = 20; // Succinylcholine IV concentration is 20 mg/mL
+const TYLENOL_IV_CONC = 10; // Tylenol IV concentration is 10 mg/mL
+const PREMEDICATION = "Premedication";
+const INDUCTION = "Induction";
+const MUSCLE_RELAXANTS = "Muscle Relaxants";
+
+// based on https://pubmed.ncbi.nlm.nih.gov/36136079/#&gid=article-figures&pid=figure-2-uid-1
+const PROPOFOL_AGE_DOSE_DATA = [
+  { mean: 4.8, sd: 1.6 }, // 0 years
+  { mean: 4.4, sd: 1.4 }, // 1 year
+  { mean: 4.2, sd: 1.2 }, // 2 years
+  { mean: 4.1, sd: 1.0 }, // 3 years
+  { mean: 3.8, sd: 1.1 }, // 4 years
+  { mean: 3.7, sd: 1.0 }, // 5 years
+  { mean: 3.6, sd: 0.9 }, // 6 years
+  { mean: 3.4, sd: 0.9 }, // 7 years
+  { mean: 3.4, sd: 0.9 }, // 8 years
+  { mean: 3.2, sd: 0.9 }, // 9 years
+  { mean: 3.1, sd: 0.8 }, // 10 years
+  { mean: 3.0, sd: 0.8 }, // 11 years
+  { mean: 2.9, sd: 0.8 }, // 12 years
+  { mean: 2.8, sd: 0.8 }, // 13 years
+  { mean: 2.8, sd: 0.9 }, // 14 years
+  { mean: 2.6, sd: 0.8 }, // 15 years
+  { mean: 2.6, sd: 0.9 }, // 16 years
+  { mean: 2.5, sd: 0.8 }, // 17 years
+  { mean: 2.5, sd: 0.8 }, // 18 years (NOTE: not in the paper, but reasonable assumption)
+];
+
 const CATEGORIES = [
   {
-    cat: "Induction",
-    initOpen: true,
+    cat: "Resuscitation",
+    meds: [
+      {
+        med: "Epinephrine",
+        routes: [
+          { route: "IV q3-5min (Hypotension)", low: 1, units: "mcg" },
+          { route: "IV q3-5min (Cardiac arrest)", low: 10, units: "mcg" },
+        ],
+      },
+      {
+        med: "Atropine",
+        routes: [
+          {
+            route: "IV/IM",
+            customFormula: {
+              str: "0.02 mg/kg (<13y: max 1mg, ≥13y: max 2mg)",
+              func: (age, weight) => {
+                if (
+                  age === 0 ||
+                  age === null ||
+                  weight === 0 ||
+                  weight === null
+                ) {
+                  return "-";
+                }
+                const dose = 0.02 * weight;
+                let dosage;
+                if (dose <= 0.1) {
+                  dosage = "0.1 mg (min dose)";
+                }
+                if (age < 13 && dose >= 1) {
+                  dosage = "1.0 mg (max dose)";
+                }
+                if (age >= 13 && dose >= 2) {
+                  dosage = "2.0 mg (max dose)";
+                } else {
+                  dosage = `${dose} mg`;
+                }
+                return [dosage, null, null];
+              },
+            },
+          },
+        ],
+      },
+      {
+        med: "Calcium Chloride",
+        routes: [
+          { route: "IV", low: 10, high: 20, max: 1000, units: "mg", conc: 100 },
+        ],
+      },
+      {
+        med: "Insulin",
+        routes: [{ route: "IV", low: 0.1, units: "units" }],
+      },
+      { med: "Glucose", routes: [{ route: "IV", low: 0.5, units: "g" }] },
+      {
+        med: "Adenosine",
+        routes: [
+          { route: "IV (1st dose)", low: 0.1, max: 6, units: "mg", conc: 3 },
+          { route: "IV (2nd dose)", low: 0.2, max: 12, units: "mg", conc: 3 },
+        ],
+      },
+      {
+        med: "Amiodarone",
+        routes: [{ route: "IV", low: 5, max: 300, units: "mg", conc: 50 }],
+      },
+      {
+        med: "Caffeine",
+        routes: [{ route: "IV", low: 10, units: "mg", conc: 20 }],
+      },
+      {
+        med: "Calcium Gluconate",
+        routes: [
+          { route: "IV", low: 30, high: 60, max: 1000, units: "mg", conc: 100 },
+        ],
+      },
+      {
+        med: "Flumazenil ",
+        routes: [{ route: "IV", low: 0.01, units: "mg", conc: 0.1 }],
+      },
+      {
+        med: "Intralipid 20%",
+        routes: [
+          { route: "IV", low: 1.5, units: "mL", notes: "Can repeat 1-2 times" },
+        ],
+      },
+      {
+        med: "Lidocaine",
+        routes: [
+          {
+            route: "IV",
+            low: 1,
+            units: "mg",
+            notes: "Follow with 20-50 mcg/kg/min",
+          },
+        ],
+      },
+      {
+        med: "Magnesium",
+        routes: [
+          { route: "IV", low: 20, high: 50, max: 2000, units: "mg", conc: 500 },
+        ],
+      },
+      {
+        med: "Naloxone (opioid intoxication)",
+        routes: [{ route: "IV", low: 10, units: "mcg" }],
+      },
+      {
+        med: "Sodium Bicarb",
+        routes: [{ route: "IV", low: 1, high: 2, units: "mEq" }],
+      },
+    ],
+  },
+  {
+    cat: "Blood Products",
+    meds: [
+      {
+        med: "pRBC",
+        routes: [
+          {
+            route: "",
+            low: 10,
+            high: 15,
+            units: "mL",
+            notes: "Rise Hct 6-9/Hgb 2-3",
+          },
+        ],
+      },
+      {
+        med: "Cryoprecipitate",
+        routes: [
+          {
+            route: "",
+            low: 1,
+            high: 2,
+            units: "Units",
+            notes: "Rise Fibrinogen 60-100 mg/dL",
+          },
+        ],
+      },
+      {
+        med: "FFP",
+        routes: [
+          {
+            route: "",
+            low: 10,
+            high: 15,
+            units: "mL",
+            notes: "Rise Factors 15-20%",
+          },
+        ],
+      },
+      {
+        med: "Platelets",
+        routes: [
+          { route: "", low: 5, high: 10, units: "mL", notes: "Rise 50-100K" },
+        ],
+      },
+      {
+        med: "DDAVP",
+        routes: [
+          {
+            route: "",
+            low: 0.1,
+            high: 0.3,
+            units: "mcg",
+            notes: "(30 min prior to proc)",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    cat: "Malignant Hyperthermia",
+    meds: [
+      {
+        med: "Dantrolene",
+        routes: [
+          {
+            route: "IV",
+            low: 2.5,
+            units: "mg",
+            notes: "Max = 10mg/kg = 4 doses. MH hotline: 1-800-644-9737",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    cat: PREMEDICATION,
+    meds: [
+      {
+        med: "Midazolam",
+        routes: [
+          {
+            route: "IV/IM",
+            low: 0.05,
+            high: 0.1,
+            units: "mg",
+            conc: 1,
+            notes: "Use concentrated Midazolam for IM and Nasal",
+          },
+          {
+            route: "PO",
+            low: 0.5,
+            units: "mg",
+            max: 20,
+          },
+          {
+            route: "Nasal",
+            low: 0.2,
+            high: 0.3,
+            units: "mg",
+            notes: "Use concentrated Midazolam for IM and Nasal",
+          },
+        ],
+      },
+      {
+        med: "Ketamine",
+        routes: [
+          {
+            route: "IV/PO",
+            low: 0.5,
+            high: 2,
+            units: "mg",
+            conc: 10,
+          },
+          {
+            route: "IM",
+            low: 3,
+            high: 7,
+            units: "mg",
+            conc: 100,
+          },
+        ],
+      },
+      {
+        med: "Dexmedetomidine",
+        routes: [
+          {
+            route: "IV",
+            low: 0.3,
+            high: 2,
+            units: "mcg",
+            conc: 4,
+            notes: "Over 10 minutes",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    cat: INDUCTION,
     meds: [
       {
         med: "Propofol",
@@ -11,19 +291,58 @@ const CATEGORIES = [
             low: 2,
             high: 3,
             units: "mg",
+            conc: 10,
+            customFormula: {
+              str: (age) => {
+                if (age === undefined || age < 0 || age > 18) {
+                  return "-";
+                }
+            
+                const roundedAge = Math.floor(age);
+                const doseData = PROPOFOL_AGE_DOSE_DATA[roundedAge];
+            
+                if (!doseData) {
+                  return "-";
+                }
+            
+                const { mean, sd } = doseData;
+                return `${mean} ± ${sd} mg/kg`;
+              },
+              func: (age, weight) => {
+                if (age === undefined || weight === undefined || age < 0 || age > 18) {
+                  return "-";
+                }
+            
+                const roundedAge = Math.floor(age);
+                const doseData = PROPOFOL_AGE_DOSE_DATA[roundedAge];
+            
+                if (!doseData) {
+                  return "-";
+                }
+            
+                const { mean, sd } = doseData;
+            
+                const lowDose = Math.max(0, (mean - sd) * weight);
+                const highDose = Math.max(0, (mean + sd) * weight);
+            
+                return [`${lowDose.toFixed(2)} - ${highDose.toFixed(2)} mg`, null, null];
+              },
+            },
           },
         ],
       },
-      { med: "Etomidate", routes: [{ route: "IV", low: 0.3, units: "mg" }] },
+      {
+        med: "Etomidate",
+        routes: [{ route: "IV", low: 0.3, units: "mg", conc: 2 }],
+      },
       {
         med: "Ketamine",
-        routes: [{ route: "IV", low: 2, high: 3, units: "mg" }],
+        routes: [{ route: "IV", low: 1, high: 2, units: "mg", conc: 10 }],
       },
     ],
   },
   {
-    cat: "Muscle Relaxants",
-    initOpen: true,
+    cat: MUSCLE_RELAXANTS,
     meds: [
       {
         med: "Rocuronium",
@@ -32,11 +351,13 @@ const CATEGORIES = [
             route: "IV",
             low: 0.6,
             units: "mg",
+            conc: 10,
           },
           {
             route: "IV (RSI)",
             low: 1.2,
             units: "mg",
+            conc: 10,
           },
         ],
       },
@@ -46,7 +367,7 @@ const CATEGORIES = [
       },
       {
         med: "Cisatracurium",
-        routes: [{ route: "IV", low: 0.1, high: 0.2, units: "mg" }],
+        routes: [{ route: "IV", low: 0.1, high: 0.2, units: "mg", conc: 2 }],
       },
       {
         med: "Succinylcholine",
@@ -56,12 +377,32 @@ const CATEGORIES = [
             customFormula: {
               str: "<1y: 2-3 mg/kg, >1y: 1-2 mg/kg",
               func: (age, weight) => {
-                if (age === 0 || weight === 0) return "";
-                return `${roundToHundredth(
-                  age < 1 ? 2 * weight : weight
-                )}-${roundToHundredth(age < 1 ? 3 * weight : 2 * weight)} mg`;
+                if (
+                  age === 0 ||
+                  weight === 0 ||
+                  age === null ||
+                  weight === null
+                ) {
+                  return "-";
+                }
+                const lowDose = roundToHundredth(age < 1 ? 2 * weight : weight);
+                const highDose = roundToHundredth(
+                  age < 1 ? 3 * weight : 2 * weight
+                );
+                const lowVolume = roundToHundredth(
+                  lowDose / SUCCINYLCHOLINE_IV_CONC
+                );
+                const highVolume = roundToHundredth(
+                  highDose / SUCCINYLCHOLINE_IV_CONC
+                );
+                return [
+                  `${lowDose}-${highDose} mg`,
+                  `${lowVolume}-${highVolume}cc`,
+                  `${SUCCINYLCHOLINE_IV_CONC} mg/mL`,
+                ];
               },
             },
+            conc: SUCCINYLCHOLINE_IV_CONC,
           },
           {
             route: "IM",
@@ -74,16 +415,42 @@ const CATEGORIES = [
     ],
   },
   {
+    cat: "Antiemetics",
+    meds: [
+      {
+        med: "Dexamethasone",
+        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg", conc: 4 }],
+      },
+      {
+        med: "Ondansetron",
+        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg", conc: 2 }],
+      },
+      {
+        med: "Metoclopramide",
+        routes: [{ route: "IV/PO", low: 0.15, max: 10, units: "mg", conc: 5 }],
+      },
+      {
+        med: "Droperidol",
+        routes: [{ route: "IV", low: 10, units: "mcg" }],
+      },
+    ],
+  },
+  {
     cat: "Muscle Relaxant Reversal",
-    initOpen: true,
     meds: [
       {
         med: "Glycopyrrolate",
-        routes: [{ route: "IV", low: 0.007, high: 0.015, units: "mg" }],
+        routes: [{ route: "IV", low: 7, high: 15, units: "mcg", conc: 200 }],
       },
       {
         med: "Neostigmine",
-        routes: [{ route: "IV", low: 0.035, high: 0.075, units: "mg" }],
+        routes: [
+          { route: "IV", low: 0.035, high: 0.075, units: "mg", conc: 1 },
+        ],
+      },
+      {
+        med: "Atropine (infants)",
+        routes: [{ route: "IV", low: 0.02, units: "mg" }],
       },
       {
         med: "Sugammadex",
@@ -92,17 +459,19 @@ const CATEGORIES = [
             route: "IV (TOF≥2)",
             low: 2,
             units: "mg",
+            conc: 100,
           },
           {
             route: "IV (TOF<2)",
             low: 4,
             units: "mg",
+            conc: 100,
           },
           {
             route: "IV (immediate reversal)",
             low: 16,
             units: "mg",
-            notes: "if approved by Attng",
+            conc: 100,
           },
         ],
       },
@@ -110,15 +479,20 @@ const CATEGORIES = [
   },
   {
     cat: "Pain Medications",
-    initOpen: true,
     meds: [
       {
         med: "Tylenol",
         routes: [
           {
-            route: "PO/PR",
+            route: "PO",
             low: 10,
             high: 15,
+            units: "mg",
+            notes: "Max 40 mg/kg/day up to 3g/day",
+          },
+          {
+            route: "PR",
+            low: 30,
             units: "mg",
             notes: "Max 40 mg/kg/day up to 3g/day",
           },
@@ -126,14 +500,29 @@ const CATEGORIES = [
             route: "IV (Q6)",
             customFormula: {
               str: "<1mo: 7.5 mg/kg, 1mo-2y: 10 mg/kg, >2y: 15 mg/kg",
-              func: (age, weight) =>
-                `${
+              func: (age, weight) => {
+                if (
+                  age === 0 ||
+                  age === null ||
+                  weight === 0 ||
+                  weight === null
+                ) {
+                  return "-";
+                }
+                const dose = roundToHundredth(
                   age < 1 / 12
                     ? 7.5 * weight
                     : age <= 2
                     ? 10 * weight
                     : 15 * weight
-                } mg`,
+                );
+                const volume = roundToHundredth(dose / TYLENOL_IV_CONC);
+                return [
+                  `${dose} mg`,
+                  `${volume}cc`,
+                  `${TYLENOL_IV_CONC} mg/mL`,
+                ];
+              },
             },
             notes: "Max 75 mg/kg/day up to 3g/day",
           },
@@ -146,7 +535,7 @@ const CATEGORIES = [
       {
         med: "Fentanyl",
         routes: [
-          { route: "IV", low: 0.5, high: 1, units: "mcg" },
+          { route: "IV", low: 0.5, high: 1, units: "mcg", conc: 50 },
           { route: "Nasal", low: 2, units: "mcg" },
         ],
       },
@@ -156,17 +545,16 @@ const CATEGORIES = [
       },
       {
         med: "Toradol",
-        routes: [{ route: "IV", low: 0.5, max: 30, units: "mg" }],
+        routes: [{ route: "IV", low: 0.5, max: 30, units: "mg", conc: 30 }],
       },
       {
         med: "Ketamine",
-        routes: [{ route: "IV", low: 0.25, high: 1, units: "mg" }],
+        routes: [{ route: "IV", low: 0.25, high: 1, units: "mg", conc: 10 }],
       },
     ],
   },
   {
     cat: "Antibiotics",
-    initOpen: true,
     meds: [
       {
         med: "Ampicillin (Q4)",
@@ -177,7 +565,7 @@ const CATEGORIES = [
       {
         med: "Cefazolin (Q4)",
         routes: [
-          { route: "IV", low: 30, max: 2000, units: "mg", notes: "IVP" },
+          { route: "IV", low: 30, max: 3000, units: "mg", notes: "IVP" },
         ],
       },
       {
@@ -215,84 +603,6 @@ const CATEGORIES = [
       {
         med: "Zosyn(Pip/Tazo)",
         routes: [{ route: "IV", low: 75, max: 3375, units: "mg" }],
-      },
-    ],
-  },
-  {
-    cat: "Antiemetic",
-    initOpen: true,
-    meds: [
-      {
-        med: "Dexamethasone",
-        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
-      },
-      {
-        med: "Ondansetron",
-        routes: [{ route: "IV", low: 0.1, max: 4, units: "mg" }],
-      },
-      {
-        med: "Metoclopramide",
-        routes: [{ route: "IV/PO", low: 0.15, max: 10, units: "mg" }],
-      },
-    ],
-  },
-  {
-    cat: "Premedication",
-    meds: [
-      {
-        med: "Midazolam",
-        routes: [
-          {
-            route: "IV/IM",
-            low: 0.05,
-            high: 0.1,
-            units: "mg",
-            notes: "Use concentrated Midazolam for IM and Nasal",
-          },
-          {
-            route: "PO",
-            low: 0.5,
-            units: "mg",
-            max: 20,
-          },
-          {
-            route: "Nasal",
-            low: 0.2,
-            high: 0.3,
-            units: "mg",
-            notes: "Use concentrated Midazolam for IM and Nasal",
-          },
-        ],
-      },
-      {
-        med: "Ketamine",
-        routes: [
-          {
-            route: "IV/PO",
-            low: 0.5,
-            high: 2,
-            units: "mg",
-          },
-          {
-            route: "IM",
-            low: 3,
-            high: 7,
-            units: "mg",
-            notes: "Use concentrated Ketamine",
-          },
-        ],
-      },
-      {
-        med: "Dexmedetomidine",
-        routes: [
-          {
-            route: "IV",
-            low: 0.3,
-            high: 2,
-            units: "mcg",
-            notes: "Over 10 minutes",
-          },
-        ],
       },
     ],
   },
@@ -342,156 +652,6 @@ const CATEGORIES = [
     ],
   },
   {
-    cat: "Blood Products",
-    meds: [
-      {
-        med: "Cryoprecipitate",
-        routes: [
-          {
-            route: "",
-            low: 1,
-            high: 2,
-            units: "Units",
-            notes: "Rise Fibrinogen 60-100 mg/dL",
-          },
-        ],
-      },
-      {
-        med: "FFP",
-        routes: [
-          {
-            route: "",
-            low: 10,
-            high: 15,
-            units: "mL",
-            notes: "Rise Factors 15-20%",
-          },
-        ],
-      },
-      {
-        med: "Platelets",
-        routes: [
-          { route: "", low: 5, high: 10, units: "mL", notes: "Rise 50-100K" },
-        ],
-      },
-      {
-        med: "pRBC",
-        routes: [
-          {
-            route: "",
-            low: 10,
-            high: 15,
-            units: "mL",
-            notes: "Rise Hct 6-9/Hgb 2-3",
-          },
-        ],
-      },
-      {
-        med: "DDAVP",
-        routes: [
-          {
-            route: "",
-            low: 0.1,
-            high: 0.3,
-            units: "mcg",
-            notes: "(30 min prior to proc)",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    cat: "Resuscitation",
-    meds: [
-      {
-        med: "Epinephrine",
-        routes: [
-          { route: "IV q3-5min (Hypotension)", low: 1, units: "mcg" },
-          { route: "IV q3-5min (Cardiac arrest)", low: 10, units: "mcg" },
-        ],
-      },
-      {
-        med: "Atropine",
-        routes: [
-          {
-            route: "IV/IM",
-            customFormula: {
-              str: "0.02 mg/kg (<13y: max 1mg, ≥13y: max 2mg)",
-              func: (age, weight) => {
-                const dose = 0.02 * weight;
-                if (dose < 0.1) {
-                  return "0.1 mg (min dose)";
-                }
-                if (age < 13 && dose > 1) {
-                  return "1.0 mg (max dose)";
-                }
-                if (age >= 13 && dose > 2) {
-                  return "2.0 mg (max dose)";
-                }
-                return `${dose} mg`;
-              },
-            },
-            notes:
-              "Atropine and Succinylcholine should be readily accessible on your cart in syringes equipped with 22-25G needles",
-          },
-        ],
-      },
-      {
-        med: "Adenosine",
-        routes: [
-          { route: "IV (1st dose)", low: 0.1, max: 6, units: "mg" },
-          { route: "IV (2nd dose)", low: 0.2, max: 12, units: "mg" },
-        ],
-      },
-      {
-        med: "Amiodarone",
-        routes: [{ route: "IV", low: 5, max: 300, units: "mg" }],
-      },
-      { med: "Caffeine", routes: [{ route: "IV", low: 10, units: "mg" }] },
-      {
-        med: "Calcium Chloride",
-        routes: [{ route: "IV", low: 10, high: 20, max: 1000, units: "mg" }],
-      },
-      {
-        med: "Calcium Gluconate",
-        routes: [{ route: "IV", low: 30, high: 60, max: 1000, units: "mg" }],
-      },
-      {
-        med: "Dantrolene",
-        routes: [{ route: "IV", low: 2.5, max: 10, units: "mg" }],
-      },
-      { med: "Flumazenil ", routes: [{ route: "IV", low: 0.01, units: "mg" }] },
-      { med: "Glucose", routes: [{ route: "IV", low: 0.5, units: "g" }] },
-      {
-        med: "Intralipid 20%",
-        routes: [{ route: "IV", low: 1.5, high: 3, units: "mL" }],
-      },
-      {
-        med: "Lidocaine",
-        routes: [
-          {
-            route: "IV",
-            low: 1,
-            units: "mg",
-            notes: "Follow with 20-50 mcg/kg/min",
-          },
-        ],
-      },
-      {
-        med: "Magnesium",
-        routes: [{ route: "IV", low: 20, high: 50, max: 2000, units: "mg" }],
-      },
-      {
-        med: "Naloxone (opioid intoxication)",
-        routes: [{ route: "IV", low: 10, units: "mcg" }],
-      },
-      {
-        med: "Sodium Bicarb",
-        routes: [{ route: "IV", low: 1, high: 2, units: "mEq" }],
-      },
-    ],
-  },
-  {
     cat: "Anaphylaxis",
     meds: [
       {
@@ -504,19 +664,20 @@ const CATEGORIES = [
       },
       {
         med: "Diphenhydramine",
-        routes: [{ route: "IV", low: 1, high: 2, units: "mg" }],
+        routes: [{ route: "IV", low: 1, high: 2, units: "mg", conc: 50 }],
       },
       {
         med: "Hydrocortisone",
         routes: [{ route: "IV", low: 1, high: 5, units: "mg" }],
       },
-      { med: "Ranitidine", routes: [{ route: "IV", low: 1.5, units: "mg" }] },
+      {
+        med: "Ranitidine",
+        routes: [{ route: "IV", low: 1.5, units: "mg", conc: 25 }],
+      },
     ],
   },
 ];
-
+const INIT_OPEN = [PREMEDICATION, INDUCTION, MUSCLE_RELAXANTS];
 const id = (i, j) => i.toString() + "," + j.toString();
-
 const roundToHundredth = (num) => Math.round(num * 100) / 100;
-
-export { CATEGORIES, id, roundToHundredth };
+export { CATEGORIES, INIT_OPEN, id, roundToHundredth };

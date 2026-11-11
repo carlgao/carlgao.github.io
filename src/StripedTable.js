@@ -23,6 +23,8 @@ const useStyles = makeStyles({
   },
   bodyCell: {
     padding: 4,
+    borderRight: "1px solid #CCCCCC",
+    "&:last-child": { borderRight: 0 },
   },
   pastelCyan: {
     backgroundColor: "#DCFFFB",
@@ -48,7 +50,7 @@ export default function StripedTable({ title, rows, variant = "pastelBlue" }) {
             <TableRow>
               <TableCell
                 align="center"
-                colSpan={rows[0].length}
+                colSpan={9}
                 className={`${classes.headCell} ${classes[variant]}`}
               >
                 {title}

@@ -3,19 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
+    "@material-ui/core": "4.12.4",
+    "@material-ui/icons": "4.11.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "gh-pages": "^3.1.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "gh-pages": "3.1.0",
+    "react": "16.14.0",
+    "react-dom": "16.14.0",
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -b master -d build",
+    "deploy": "gh-pages -b master -d build -r git@github.com:pediatrica/pediatrica.github.io.git",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -36,5 +36,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://carlgao.github.io"
+  "homepage": "https://pediatrica.github.io",
+  "engines": {
+    "node": ">=24 <25"
+  }
 }

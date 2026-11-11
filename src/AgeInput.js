@@ -34,7 +34,6 @@ export default function AgeInput({
         min={MIN}
         max={MONTHS_MAX}
         units="months"
-        rightMargin
       />
     </>
   );

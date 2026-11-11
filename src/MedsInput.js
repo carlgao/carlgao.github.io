@@ -34,15 +34,15 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MedsInput({ categories, onChange }) {
+export default function MedsInput({ categories, initOpen, onChange }) {
   const classes = useStyles();
   return (
     <div>
       <Typography gutterBottom>Show dosages for:</Typography>
-      {categories.map(({ cat, initOpen, meds }, i) => (
+      {categories.map(({ cat, meds }, i) => (
         <CustomCard key={i}>
           <Accordion
-            defaultExpanded={initOpen === true}
+            defaultExpanded={initOpen.includes(cat)}
             className={classes.accordion}
           >
             <CustomAccordionSummary expandIcon={<ExpandMoreIcon />}>

@@ -8,7 +8,7 @@ const roundToNearestHalf = (num) => {
 };
 
 const genCuffedEttSize = (age) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age < 6 / 12) {
@@ -45,7 +45,7 @@ const genCuffedEttSize = (age) => {
 };
 
 const genUncuffedEttSize = (age) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age < 6 / 12) {
@@ -67,7 +67,7 @@ const genUncuffedEttSize = (age) => {
 };
 
 const genEttDepth = (age) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age < 6 / 12) {
@@ -110,7 +110,7 @@ const genEttDepth = (age) => {
 };
 
 const genFaceMaskSize = (age) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -129,7 +129,7 @@ const genFaceMaskSize = (age) => {
 };
 
 const genOralAirwaySize = (age, premature) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -156,7 +156,7 @@ const genOralAirwaySize = (age, premature) => {
 };
 
 const genEbv = (age, weight, premature) => {
-  if (age === 0 || weight === 0) {
+  if (age === 0 || age === null || weight === 0 || weight === null) {
     return "-";
   }
   if (age <= 1 / 12) {
@@ -175,14 +175,14 @@ const genEbv = (age, weight, premature) => {
 };
 
 const genLmaSize = (weight) => {
-  if (weight === 0) {
+  if (weight === 0 || weight === null) {
     return "-";
   }
   return roundToNearestHalf(weight / 20 + 1);
 };
 
 const genBladeSize = (age) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age < 6 / 12) {
@@ -204,7 +204,7 @@ const genBladeSize = (age) => {
 };
 
 const genMaintenanceIvf = (weight) => {
-  if (weight === 0) {
+  if (weight === 0 || weight === null) {
     return "-";
   }
   if (weight <= 10) {
@@ -217,7 +217,7 @@ const genMaintenanceIvf = (weight) => {
 };
 
 const genSbp = (age, premature) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -245,7 +245,7 @@ const genSbp = (age, premature) => {
 };
 
 const genDbp = (age, premature) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -267,7 +267,7 @@ const genDbp = (age, premature) => {
 };
 
 const genHr = (age, premature) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -295,7 +295,7 @@ const genHr = (age, premature) => {
 };
 
 const genRr = (age, premature) => {
-  if (age === 0) {
+  if (age === 0 || age === null) {
     return "-";
   }
   if (age <= 1 / 12 && premature) {
@@ -316,7 +316,49 @@ const genRr = (age, premature) => {
   return "14-20";
 };
 
+const genTubeSize = (age) => {
+  if (age === 0 || age === null) {
+    return "";
+  }
+  if (age <= 6 / 12) {
+    return "8-10 Fr";
+  }
+  if (age < 3) {
+    return "10 Fr";
+  }
+  if (age < 5) {
+    return "10-12 Fr";
+  }
+  if (age < 8) {
+    return "12 Fr";
+  }
+  if (age < 12) {
+    return "14 Fr";
+  }
+  return "14-16 Fr";
+};
+
+const genCentralVenousLineSize = (age) => {
+  if (age === 0 || age === null) {
+    return "";
+  }
+  if (age <= 1 / 12) {
+    return "3 Fr";
+  }
+  if (age < 1) {
+    return "3-4 Fr";
+  }
+  if (age < 8) {
+    return "4-5 Fr";
+  }
+  return "5-8 Fr";
+};
+
 const useStyles = makeStyles({
+  note: {
+    fontSize: "0.5em",
+    fontStyle: "italic",
+  },
   root: {
     display: "inline-block",
     verticalAlign: "top",
@@ -331,11 +373,24 @@ export default function NonMedOutput({ age, weight, premature }) {
         title="Airway"
         variant="pastelCyan"
         rows={[
+          [
+            <span className={classes.note}>
+              ETT diameter should be no bigger than that of pinky tip
+            </span>,
+            "",
+          ],
           ["ETT Size Cuffed", genCuffedEttSize(age)],
           ["ETT Size Uncuffed", genUncuffedEttSize(age)],
           ["ETT Depth", genEttDepth(age)],
           ["Face Mask Size", genFaceMaskSize(age)],
           ["Oral Airway Size", genOralAirwaySize(age, premature)],
+          [
+            <span className={classes.note}>
+              LMA diameter = length of palm OR middle finger tip to palm,
+              whichever is smaller
+            </span>,
+            "",
+          ],
           ["LMA Size", genLmaSize(weight)],
           ["Blade Size", genBladeSize(age)],
         ]}
@@ -356,6 +411,12 @@ export default function NonMedOutput({ age, weight, premature }) {
         rows={[
           ["EBV", genEbv(age, weight, premature)],
           ["Maintenance IVF", genMaintenanceIvf(weight)],
+          ["OG/NG Tube Size", genTubeSize(age)],
+          ["Central Venous Line Size", genCentralVenousLineSize(age)],
+          ["Fasting Guidelines", "Clear Liquids: 2hrs"],
+          ["", "Breast milk: 4hrs"],
+          ["", "Infant formula: 6hrs"],
+          ["", "Solids, milk, light meal, jello: 8 hrs"],
         ]}
       />
     </div>

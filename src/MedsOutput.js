@@ -11,35 +11,77 @@ const genDefaultFormula = (low, high, max, units) => {
   return max !== undefined ? `${formula} (max ${max} ${units})` : formula;
 };
 
-const genDefaultDosage = (weight, low, high, max, units) => {
+const genDefaultLowDose = (weight, low, max) => {
+  const lowDose = roundToHundredth(low * weight);
+  if (lowDose >= max) {
+    return max;
+  }
+  return lowDose;
+};
+
+const genDefaultHighDose = (weight, high, max) => {
+  const highDose = roundToHundredth(high * weight);
+  if (highDose >= max) {
+    return max;
+  }
+  return highDose;
+};
+
+const genVolume = (dose, conc) => {
+  if (conc === undefined) {
+    return null;
+  }
+  return roundToHundredth(dose / conc);
+};
+
+const genDefaultDosages = (weight, low, high, max, units, conc) => {
+  if (weight === 0 || weight === null) {
+    return ["-", "-"];
+  }
+
   if (max === undefined) {
     max = Number.MAX_SAFE_INTEGER;
   }
 
-  const lowDose = roundToHundredth(low * weight);
-  if (lowDose >= max) {
-    return `${max} ${units}`;
+  const lowDose = genDefaultLowDose(weight, low, max);
+  if (high === undefined || lowDose >= max) {
+    if (conc !== undefined) {
+      const lowVolume = genVolume(lowDose, conc);
+      return [`${lowDose} ${units}`, `${lowVolume}cc`];
+    }
+
+    return [`${lowDose} ${units}`, null];
   }
 
-  if (high === undefined) {
-    return `${lowDose} ${units}`;
+  const highDose = genDefaultHighDose(weight, high, max);
+  if (conc !== undefined) {
+    const lowVolume = genVolume(lowDose, conc);
+    const highVolume = genVolume(highDose, conc);
+    return [`${lowDose}-${highDose} ${units}`, `${lowVolume}-${highVolume}cc`];
   }
-
-  const highDose = roundToHundredth(high * weight);
-  if (highDose >= max) {
-    return `${lowDose}-${max} ${units}`;
-  }
-  return `${lowDose}-${highDose} ${units}`;
+  return [`${lowDose}-${highDose} ${units}`, null];
 };
+
+const useStyles = makeStyles({
+  dosage: {
+    textAlign: "right",
+    fontWeight: "bold",
+  },
+  concentration: {
+    fontStyle: "italic",
+  },
+});
 
 const genRows = (classes, i, meds, medIdSet, age, weight) => {
   let rows = [];
   meds.map(({ med, routes }, j) =>
     medIdSet.has(id(i, j))
       ? routes.forEach(
-          ({ route, low, high, max, units, customFormula, notes }) => {
+          ({ route, low, high, max, units, customFormula, conc, notes }) => {
             let formula;
-            let dosage;
+            let mass;
+            let volume;
+            let concStr;
             if (customFormula !== undefined) {
               if (
                 low !== undefined ||
@@ -52,31 +94,49 @@ const genRows = (classes, i, meds, medIdSet, age, weight) => {
                 );
               }
               formula = customFormula.str;
-              dosage = customFormula.func(age, weight);
+              [mass, volume, concStr] = customFormula.func(age, weight);
             } else {
               formula = genDefaultFormula(low, high, max, units);
-              dosage = genDefaultDosage(weight, low, high, max, units);
+              [mass, volume] = genDefaultDosages(
+                weight,
+                low,
+                high,
+                max,
+                units,
+                conc
+              );
+              concStr = `${conc} ${units}/mL`;
             }
-            rows.push([
+            let row = [
               med,
               route,
               formula,
-              <div className={classes.dosage}>{dosage}</div>,
-              notes,
-            ]);
+              <span className={classes.dosage}>{mass}</span>,
+            ];
+            // TODO: Add back in if desired
+            // if (volume !== null) {
+            //   row.push(
+            //     <>
+            //       <span className={classes.dosage}>{volume}</span>
+            //       {` `}[<span className={classes.concentration}>{concStr}</span>
+            //       ]
+            //     </>
+            //   );
+            // } else {
+            //   row.push("-");
+            // }
+            if (notes !== undefined) {
+              row.push(notes);
+            } else {
+              row.push("");
+            }
+            rows.push(row);
           }
         )
       : null
   );
   return rows;
 };
-
-const useStyles = makeStyles({
-  dosage: {
-    textAlign: "right",
-    fontWeight: "bold",
-  },
-});
 
 export default function MedsOutput({
   catCounts,

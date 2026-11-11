@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 // Resources
-import { CATEGORIES, id } from "./data.js";
+import { CATEGORIES, INIT_OPEN, id } from "./data.js";
 import { makeStyles } from "@material-ui/core/styles";
 // Components
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
+import DonationButtons from "./DonationButtons";
+import Link from "@material-ui/core/Link";
 import MedsInput from "./MedsInput.js";
 import MedsOutput from "./MedsOutput.js";
 import NonMedOutput from "./NonMedOutput.js";
@@ -22,6 +24,14 @@ const catCountsDefault = DEBUG ? { 0: 1, 1: 1 } : {};
 const prematureDefault = DEBUG ? true : false;
 
 const useStyles = makeStyles({
+  header: {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "8px 16px",
+    paddingTop: 12,
+    paddingBottom: 12,
+  },
   divider: {
     marginBottom: 20,
   },
@@ -39,8 +49,7 @@ const useStyles = makeStyles({
     zIndex: 1,
   },
   title: {
-    paddingBottom: 12,
-    paddingTop: 12,
+    flexShrink: 0,
   },
 });
 
@@ -121,9 +130,12 @@ export default function App() {
   return (
     <>
       <Container maxWidth={false}>
-        <Typography className={classes.title} variant="h6">
-          Pediatric Anesthesiology Helper
-        </Typography>
+        <header className={classes.header}>
+          <Typography className={classes.title} variant="h6">
+            Pediatrica
+          </Typography>
+          <DonationButtons />
+        </header>
         <div>
           <PatientInput
             years={years}
@@ -138,7 +150,11 @@ export default function App() {
           <NonMedOutput age={years} weight={weight} premature={premature} />
         </div>
         <Divider className={classes.divider} />
-        <MedsInput categories={CATEGORIES} onChange={handleMedChange} />
+        <MedsInput
+          categories={CATEGORIES}
+          initOpen={INIT_OPEN}
+          onChange={handleMedChange}
+        />
         <Divider className={classes.divider} ref={dosagesRef} />
         <div ref={setBottom}>
           <Typography className={classes.divider}>
@@ -156,6 +172,12 @@ export default function App() {
             substitute for the advice of an appropriately qualified and licensed
             physician or other health care provider.
           </Typography>
+          {weight > 50 ? (
+            <h2>
+              Weight {">"} 50kg: consider using adult dosing instead of dosing
+              displayed below
+            </h2>
+          ) : null}
           <MedsOutput
             catCounts={catCounts}
             categories={CATEGORIES}
@@ -163,6 +185,31 @@ export default function App() {
             age={years}
             weight={weight}
           />
+          <Typography variant="h6">References:</Typography>
+          <Typography>
+            Adenosine, intralipid, dantrolene, antibiotics:{" "}
+            <Link href="https://anesthesia.ucsf.edu/sites/anesthesia.ucsf.edu/files/wysiwyg/pdfs/PediRefCard.pdf">
+              UCSF PediRef card
+            </Link>
+          </Typography>
+          <Typography>
+            Central Venous Line Size:{" "}
+            <Link href="https://www.uptodate.com/contents/vascular-venous-access-for-pediatric-resuscitation-and-other-pediatric-emergencies#H5664656">
+              UpToDate
+            </Link>
+          </Typography>
+          <Typography>
+            OG/NG Tube Size:{" "}
+            <Link href="https://med.brown.edu/pedisurg/Brown/Handbook/Stats/NGT.html">
+              Hasbro Children's Hospital
+            </Link>
+          </Typography>
+          <Typography>All other information: Children's Hospital LA</Typography>
+          <Typography variant="h6">
+            Created by Jenny (Jia) Tang, UCI SOM '21. Please send feedback to:
+            team.pediatrica[at]gmail.com
+          </Typography>
+          <Divider className={classes.divider} />
         </div>
       </Container>
       {!dosagesVisible && medIdSet.size > 0 ? (

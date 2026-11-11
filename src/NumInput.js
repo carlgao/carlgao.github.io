@@ -8,8 +8,10 @@ const useStyles = makeStyles({
   input: {
     backgroundColor: "white",
     borderRadius: 8,
-    marginRight: "0.3em",
     marginBottom: 12,
+    marginRight: "0.3em",
+    verticalAlign: "top",
+    width: "3.5em",
   },
   units: {
     display: "inline-block",
@@ -43,7 +45,6 @@ export default function NumInput({
     <>
       <Input
         className={classes.input}
-        value={value === null ? "" : value}
         margin="dense"
         onChange={handleChange}
         onBlur={handleBlur}
@@ -55,6 +56,7 @@ export default function NumInput({
           type: "number",
           "aria-label": ariaLabel,
         }}
+        value={value === null ? "" : value}
       />
       <Typography className={classes.units}>{units}</Typography>
     </>
