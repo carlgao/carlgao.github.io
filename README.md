@@ -1,13 +1,13 @@
 # Pediatrica
 
-React and Material UI web app at [pediatrica.github.io](https://pediatrica.github.io/). Editable source lives in `src/` and `public/` on branch `codex/pediatrica-donations-source` of `carlgao/carlgao.github.io`. The separate, unfinished `pediatrica-native` project is not used.
+React and Material UI web app at [pediatrica.github.io](https://pediatrica.github.io/). Editable source lives in `src/` and `public/` on branch `main` of `carlgao/carlgao.github.io`. The separate, unfinished `pediatrica-native` project is not used.
 
 ## Development
 
 Use Node.js 24 (recorded in `.nvmrc`) and npm. With [nvm](https://github.com/nvm-sh/nvm) installed:
 
 ```sh
-git switch codex/pediatrica-donations-source
+git switch main
 nvm install
 nvm use
 npm ci
@@ -39,7 +39,7 @@ The inactive AdSense placement and scripts were removed from `public/index.html`
 
 ## Publishing
 
-Source stays on the source branch in `carlgao/carlgao.github.io`. Generated files are published to the root of **`pediatrica/pediatrica.github.io:master`**, which serves the live GitHub Pages site. Its live HTML and asset manifest matched that branch when checked on 2026-11-10.
+Source stays on `main` in `carlgao/carlgao.github.io`. Generated files are published to the root of **`pediatrica/pediatrica.github.io:master`**, which serves the live GitHub Pages site. Its live HTML and asset manifest matched that branch when checked on 2026-11-10.
 
 After review, a maintainer with SSH write access to the publishing repository can publish with:
 
@@ -59,7 +59,7 @@ npm run deploy
 
 The explicit `-r` destination is introduced on this branch. [gh-pages normally uses `origin`](https://github.com/tschaub/gh-pages/tree/v3.1.0#optionsrepo) unless another repository or remote is configured. Keep `origin` pointing to `carlgao/carlgao.github.io`; the deployment command targets the publishing repository independently. `homepage` is now `https://pediatrica.github.io`; it controls build URLs, not the Git destination.
 
-No push or deployment was performed while preparing this change.
+Pushing source to `main` does not run the deployment command.
 
 ## Recovery history
 
